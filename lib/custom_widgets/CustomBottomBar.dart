@@ -46,7 +46,7 @@ class CustomBottomBar extends StatelessWidget {
     return Container(
       height: rowHeight,
       width: this.appBarWidth * this.widthScreen,
-      color: CustomText.textColor(FontColor.blue),
+      color: CustomText.textColor(FontColor.lightBlue),
       alignment: Alignment.center,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

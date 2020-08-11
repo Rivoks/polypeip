@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+// import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:polypeip/custom_icons/font_awesome_icons.dart';
 import 'package:polypeip/custom_widgets/CustomBackAppBar.dart';
 import 'package:polypeip/custom_widgets/CustomRoundedButton.dart';
@@ -101,14 +101,15 @@ class _EventAddPageState extends State<EventAddPage> {
           Padding(padding: EdgeInsets.only(bottom: _screenHeight * 0.04)),
           GestureDetector(
             onTap: () {
-              DatePicker.showDatePicker(context,
-                  showTitleActions: true,
-                  minTime: DateTime.now(),
-                  maxTime: DateTime(2050, 12, 31), onChanged: (date) {
-                print('change $date');
-              }, onConfirm: (date) {
-                print('confirm $date');
-              }, currentTime: DateTime.now(), locale: LocaleType.fr);
+              // DatePicker.showDatePicker(context,
+              //     showTitleActions: true,
+              //     minTime: DateTime.now(),
+              //     maxTime: DateTime(2050, 12, 31), onChanged: (date) {
+              //   print('change $date');
+              // }, onConfirm: (date) {
+              //   print('confirm $date');
+              // }, currentTime: DateTime.now(), locale: LocaleType.fr);
+              print("test");
             },
             child: Container(
               alignment: Alignment.centerLeft,
@@ -148,12 +149,13 @@ class _EventAddPageState extends State<EventAddPage> {
           ),
           GestureDetector(
             onTap: () {
-              DatePicker.showTimePicker(
-                context,
-                showTitleActions: true,
-                locale: LocaleType.fr,
-                showSecondsColumn: false,
-              );
+              // DatePicker.showTimePicker(
+              //   context,
+              //   showTitleActions: true,
+              //   locale: LocaleType.fr,
+              //   showSecondsColumn: false,
+              // );
+              print("test");
             },
             child: Container(
               alignment: Alignment.centerLeft,

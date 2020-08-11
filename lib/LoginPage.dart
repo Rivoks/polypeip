@@ -16,65 +16,72 @@ class _LoginPageState extends State<LoginPage> {
     double _screenWidth = MediaQuery.of(context).size.width;
     // Color blue = CustomText.textColor(FontColor.blue);
 
-    return Scaffold(
-      body: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: _screenWidth * 0.1,
-          ),
-          height: _screenHeight,
-          width: _screenWidth,
-          color: Colors.blue,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.only(bottom: _screenHeight * 0.02),
-                child: Image.asset(
-                  "assets/img/logo_alt.png",
-                  height: _screenHeight * 0.17,
-                ),
+    return Container(
+      color: CustomText.textColor(FontColor.blue),
+      child: SafeArea(
+        child: Scaffold(
+          body: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: _screenWidth * 0.1,
               ),
-              Padding(
-                padding: EdgeInsets.only(bottom: _screenHeight * 0.1),
-                child: CustomText(
-                  text: "Se Connecter",
-                  fontColor: FontColor.white,
-                  fontSize: FontSize.xl,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              CustomTextArea(
-                heightScreen: _screenHeight,
-                widthScreen: _screenWidth,
-                borderColor: Colors.white,
-                placeHolder: "Numéro étudiant",
-                showSendIcon: false,
-              ),
-              Padding(padding: EdgeInsets.only(bottom: _screenHeight * 0.03)),
-              CustomTextArea(
-                heightScreen: _screenHeight,
-                widthScreen: _screenWidth,
-                borderColor: Colors.white,
-                placeHolder: "Mot de passe",
-                showSendIcon: false,
-              ),
-              Padding(padding: EdgeInsets.only(bottom: _screenHeight * 0.05)),
-              CustomRoundedButton(
-                screenHeight: _screenHeight,
-                screenWidth: _screenWidth,
-                buttonHeight: 0.02,
-                buttonWidth: 0.1,
-                text: "Connexion",
-                fontColor: FontColor.blue,
-                fontWeight: FontWeight.bold,
-                backgroundColor: Colors.white,
-                borderColor: Colors.white,
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, "/home");
-                },
-              ),
-            ],
-          )),
+              height: _screenHeight,
+              width: _screenWidth,
+              color: Colors.blue,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.only(bottom: _screenHeight * 0.02),
+                    child: Image.asset(
+                      "assets/img/logo_alt.png",
+                      height: _screenHeight * 0.17,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(bottom: _screenHeight * 0.1),
+                    child: CustomText(
+                      text: "Se Connecter",
+                      fontColor: FontColor.white,
+                      fontSize: FontSize.xl,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  CustomTextArea(
+                    heightScreen: _screenHeight,
+                    widthScreen: _screenWidth,
+                    borderColor: Colors.white,
+                    placeHolder: "Numéro étudiant",
+                    showSendIcon: false,
+                  ),
+                  Padding(
+                      padding: EdgeInsets.only(bottom: _screenHeight * 0.03)),
+                  CustomTextArea(
+                    heightScreen: _screenHeight,
+                    widthScreen: _screenWidth,
+                    borderColor: Colors.white,
+                    placeHolder: "Mot de passe",
+                    showSendIcon: false,
+                  ),
+                  Padding(
+                      padding: EdgeInsets.only(bottom: _screenHeight * 0.05)),
+                  CustomRoundedButton(
+                    screenHeight: _screenHeight,
+                    screenWidth: _screenWidth,
+                    buttonHeight: 0.02,
+                    buttonWidth: 0.1,
+                    text: "Connexion",
+                    fontColor: FontColor.blue,
+                    fontWeight: FontWeight.bold,
+                    backgroundColor: Colors.white,
+                    borderColor: Colors.white,
+                    onPressed: () {
+                      Navigator.pushReplacementNamed(context, "/home");
+                    },
+                  ),
+                ],
+              )),
+        ),
+      ),
     );
   }
 }

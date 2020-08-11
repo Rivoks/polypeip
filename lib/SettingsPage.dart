@@ -358,90 +358,105 @@ class _SettingsPageState extends State<SettingsPage> {
     double _screenHeight = MediaQuery.of(context).size.height;
     double _screenWidth = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: CustomBackAppBar(
-          context: this.context,
-          heightScreen: _screenHeight,
-          widthScreen: _screenWidth),
-      body: SmartRefresher(
-        controller: _refreshController,
-        enablePullUp: false,
-        header: WaterDropMaterialHeader(),
-        onRefresh: () async {
-          await Future.delayed(Duration(milliseconds: 1000));
-          _refreshController.refreshCompleted();
-        },
-        child: Container(
-          height: _screenHeight,
-          child: _isTapped == false
-              ? Column(
-                  children: <Widget>[
-                    buildTopContent(_screenHeight, _screenWidth),
-                    buildParamsContainer(
-                      _screenHeight,
-                      _screenWidth,
-                      "Notifications",
-                      false,
-                    ),
-                    buildParamsContainer(
-                      _screenHeight,
-                      _screenWidth,
-                      "Support",
-                      false,
-                    ),
-                    buildParamsContainer(
-                      _screenHeight,
-                      _screenWidth,
-                      "À propos",
-                      false,
-                    ),
-                    buildParamsContainer(
-                      _screenHeight,
-                      _screenWidth,
-                      "Admin",
-                      true,
-                    ),
-                    Expanded(
-                      child: Align(
-                        alignment: FractionalOffset.bottomCenter,
-                        child: MaterialButton(
-                          onPressed: () => {},
-                          child: CustomRoundedButton(
-                            screenHeight: _screenHeight,
-                            screenWidth: _screenWidth,
-                            buttonHeight: 0.02,
-                            buttonWidth: 0.1,
-                            text: "Déconnexion",
-                            fontColor: FontColor.white,
-                            fontWeight: FontWeight.w800,
-                            backgroundColor:
-                                CustomText.textColor(FontColor.blue),
-                            borderColor: CustomText.textColor(FontColor.blue),
-                            onPressed: () {
-                              Navigator.of(context).pushAndRemoveUntil(
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      LoginPage(),
-                                ),
-                                ModalRoute.withName('/login'),
-                              );
-                            },
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          stops: [0.4, 0.4],
+          colors: [CustomText.textColor(FontColor.lightBlue), Colors.white],
+        ),
+      ),
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          appBar: CustomBackAppBar(
+              context: this.context,
+              heightScreen: _screenHeight,
+              widthScreen: _screenWidth),
+          body: SmartRefresher(
+            controller: _refreshController,
+            enablePullUp: false,
+            header: WaterDropMaterialHeader(),
+            onRefresh: () async {
+              await Future.delayed(Duration(milliseconds: 1000));
+              _refreshController.refreshCompleted();
+            },
+            child: Container(
+              height: _screenHeight * 0.8,
+              child: _isTapped == false
+                  ? Column(
+                      children: <Widget>[
+                        buildTopContent(_screenHeight, _screenWidth),
+                        buildParamsContainer(
+                          _screenHeight,
+                          _screenWidth,
+                          "Notifications",
+                          false,
+                        ),
+                        buildParamsContainer(
+                          _screenHeight,
+                          _screenWidth,
+                          "Support",
+                          false,
+                        ),
+                        buildParamsContainer(
+                          _screenHeight,
+                          _screenWidth,
+                          "À propos",
+                          false,
+                        ),
+                        buildParamsContainer(
+                          _screenHeight,
+                          _screenWidth,
+                          "Admin",
+                          true,
+                        ),
+                        Expanded(
+                          child: Align(
+                            alignment: FractionalOffset.bottomCenter,
+                            child: MaterialButton(
+                              onPressed: () => {},
+                              child: CustomRoundedButton(
+                                screenHeight: _screenHeight,
+                                screenWidth: _screenWidth,
+                                buttonHeight: 0.02,
+                                buttonWidth: 0.1,
+                                text: "Déconnexion",
+                                fontColor: FontColor.white,
+                                fontWeight: FontWeight.w800,
+                                backgroundColor:
+                                    CustomText.textColor(FontColor.blue),
+                                borderColor:
+                                    CustomText.textColor(FontColor.blue),
+                                onPressed: () {
+                                  Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          LoginPage(),
+                                    ),
+                                    ModalRoute.withName('/login'),
+                                  );
+                                },
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                        Padding(
+                            padding: EdgeInsets.only(top: _screenHeight * 0.05))
+                      ],
+                    )
+                  : Column(
+                      children: <Widget>[
+                        buildTopContent(_screenHeight, _screenWidth),
+                        buildTopBar(
+                            _screenHeight, _screenWidth, _currentSettings),
+                        buildSettings(
+                            _screenHeight, _screenWidth, _currentSettings),
+                      ],
                     ),
-                    Padding(padding: EdgeInsets.only(top: _screenHeight * 0.05))
-                  ],
-                )
-              : Column(
-                  children: <Widget>[
-                    buildTopContent(_screenHeight, _screenWidth),
-                    buildTopBar(_screenHeight, _screenWidth, _currentSettings),
-                    buildSettings(
-                        _screenHeight, _screenWidth, _currentSettings),
-                  ],
-                ),
+            ),
+          ),
         ),
       ),
     );

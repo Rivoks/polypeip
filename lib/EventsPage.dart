@@ -267,38 +267,43 @@ class _EventsPageState extends State<EventsPage> {
     _screenHeight = MediaQuery.of(context).size.height;
     _screenWidth = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      appBar: CustomAppBar(
-          context: this.context,
-          heightScreen: _screenHeight,
-          widthScreen: _screenWidth),
-      body: SmartRefresher(
-          controller: RefreshController(initialRefresh: false),
-          enablePullUp: true,
-          header: WaterDropMaterialHeader(),
-          onRefresh: () async {
-            await Future.delayed(Duration(milliseconds: 1000));
-            _refreshController.refreshCompleted();
-          },
-          onLoading: () async {
-            print("loading");
-          },
-          child: ListView.builder(
-            itemCount: listEvents.length,
-            itemBuilder: (context, index) {
-              return Column(
-                children: <Widget>[
-                  (index == 0) ? buildTopContent() : Container(),
-                  (index == 0) ? constructTopBar() : Container(),
-                  buildSlider(_screenHeight, _screenWidth)
-                ],
-              );
-            },
-          )),
-      bottomNavigationBar: CustomBottomBar(
-          context: this.context,
-          heightScreen: _screenHeight,
-          widthScreen: _screenWidth),
+    return Container(
+      color: CustomText.textColor(FontColor.lightBlue),
+      child: SafeArea(
+        child: Scaffold(
+          appBar: CustomAppBar(
+              context: this.context,
+              heightScreen: _screenHeight,
+              widthScreen: _screenWidth),
+          body: SmartRefresher(
+              controller: RefreshController(initialRefresh: false),
+              enablePullUp: true,
+              header: WaterDropMaterialHeader(),
+              onRefresh: () async {
+                await Future.delayed(Duration(milliseconds: 1000));
+                _refreshController.refreshCompleted();
+              },
+              onLoading: () async {
+                print("loading");
+              },
+              child: ListView.builder(
+                itemCount: listEvents.length,
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: <Widget>[
+                      (index == 0) ? buildTopContent() : Container(),
+                      (index == 0) ? constructTopBar() : Container(),
+                      buildSlider(_screenHeight, _screenWidth)
+                    ],
+                  );
+                },
+              )),
+          bottomNavigationBar: CustomBottomBar(
+              context: this.context,
+              heightScreen: _screenHeight,
+              widthScreen: _screenWidth),
+        ),
+      ),
     );
   }
 }

@@ -14,12 +14,13 @@ class CustomBackAppBar extends StatelessWidget implements PreferredSizeWidget {
     @required this.widthScreen,
     this.appBarHeight = 0.082,
     this.appBarWidth = 1.0,
-    this.backgroundColor = const Color(0xff00adef),
+    this.backgroundColor = const Color(0xff20b6ef),
   });
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      elevation: 0,
       backgroundColor: this.backgroundColor,
       automaticallyImplyLeading: true,
       centerTitle: true,

@@ -2,7 +2,16 @@ import 'package:flutter/material.dart';
 
 enum FontOpacity { max, medium, min, none }
 
-enum FontColor { blue, yellow, white, black, lightGrey, darkGrey, grey }
+enum FontColor {
+  blue,
+  yellow,
+  white,
+  black,
+  lightGrey,
+  lightBlue,
+  darkGrey,
+  grey
+}
 
 enum FontSize { xs, sm, md, lg, xl }
 
@@ -57,6 +66,9 @@ class CustomText extends StatelessWidget {
     switch (fontColor) {
       case FontColor.blue:
         color = Color(0xff00adef);
+        break;
+      case FontColor.lightBlue:
+        color = Color(0xff20b6ef);
         break;
       case FontColor.yellow:
         color = Color(0xffffd675);

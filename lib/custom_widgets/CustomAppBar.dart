@@ -11,7 +11,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final double appBarIconHeight;
 
   CustomAppBar({
-
     @required this.context,
     @required this.heightScreen,
     @required this.widthScreen,
@@ -23,34 +22,36 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-
     double logoSize = this.heightScreen * this.appBarLogoHeight;
     double iconSize = this.heightScreen * this.appBarIconHeight;
 
     return AppBar(
-
+      elevation: 0,
+      brightness: Brightness.dark,
       automaticallyImplyLeading: true,
-      backgroundColor: CustomText.textColor(FontColor.blue),
+      backgroundColor: CustomText.textColor(FontColor.lightBlue),
       centerTitle: false,
       title: Padding(
-        padding: EdgeInsets.only(left: this.widthScreen * 0.05),
-        child: Image.asset(
-          "assets/img/appbar-logo.png",
-          height: logoSize,
-        )
-      ),
+          padding: EdgeInsets.only(left: this.widthScreen * 0.05),
+          child: Image.asset(
+            "assets/img/appbar-logo.png",
+            height: logoSize,
+          )),
       actions: <Widget>[
         IconButton(
-          padding: EdgeInsets.only(right: this.widthScreen * 0.1),
-          icon: Icon(Icons.settings, size: iconSize, color: Colors.white,), 
-          onPressed: () {
-            Navigator.pushNamed(context, "/settings");
-          }
-        )
+            padding: EdgeInsets.only(right: this.widthScreen * 0.1),
+            icon: Icon(
+              Icons.settings,
+              size: iconSize,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.pushNamed(context, "/settings");
+            })
       ],
     );
   }
 
-  Size get preferredSize => Size(widthScreen * appBarWidth, heightScreen * appBarHeight);
-
+  Size get preferredSize =>
+      Size(widthScreen * appBarWidth, heightScreen * appBarHeight);
 }

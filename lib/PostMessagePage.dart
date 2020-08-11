@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+import 'custom_widgets/CustomBackAppBar.dart';
+
 class PostMessagePage extends StatefulWidget {
   PostMessagePage({@required this.postId});
 
@@ -34,63 +36,78 @@ class _PostMessagePageState extends State<PostMessagePage> {
       },
     ];
 
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(),
-      body: SmartRefresher(
-          controller: _refreshController,
-          enablePullDown: true,
-          enablePullUp: false,
-          header: WaterDropMaterialHeader(),
-          onRefresh: () async {
-            await Future.delayed(Duration(milliseconds: 1000));
-            _refreshController.refreshCompleted();
-          },
-          child: ListView.builder(
-              itemCount: message.length,
-              itemBuilder: (context, index) {
-                return Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: _screenWidth * 0.05,
-                      vertical: _screenHeight * 0.05,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        CustomText(
-                          text: message[index]['title'],
-                          fontColor: FontColor.black,
-                          fontSize: FontSize.xl,
-                          fontWeight: FontWeight.bold,
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          stops: [0.4, 0.4],
+          colors: [CustomText.textColor(FontColor.lightBlue), Colors.white],
+        ),
+      ),
+      child: SafeArea(
+        child: Scaffold(
+          key: _scaffoldKey,
+          appBar: CustomBackAppBar(
+              context: this.context,
+              heightScreen: _screenHeight,
+              widthScreen: _screenWidth),
+          body: SmartRefresher(
+              controller: _refreshController,
+              enablePullDown: true,
+              enablePullUp: false,
+              header: WaterDropMaterialHeader(),
+              onRefresh: () async {
+                await Future.delayed(Duration(milliseconds: 1000));
+                _refreshController.refreshCompleted();
+              },
+              child: ListView.builder(
+                  itemCount: message.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: _screenWidth * 0.05,
+                          vertical: _screenHeight * 0.05,
                         ),
-                        Padding(
-                            padding: EdgeInsets.symmetric(
-                              vertical: _screenHeight * 0.01,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            CustomText(
+                              text: message[index]['title'],
+                              fontColor: FontColor.black,
+                              fontSize: FontSize.xl,
+                              fontWeight: FontWeight.bold,
                             ),
-                            child: CustomText(
-                              text: 'Reçu le ' + message[index]['date'],
-                              fontColor: FontColor.darkGrey,
-                              fontSize: FontSize.sm,
-                            )),
-                        Container(
-                            height: 1,
-                            width: _screenWidth,
-                            color: Colors.grey[350]),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            vertical: _screenWidth * 0.07,
-                          ),
-                          child: CustomText(
-                            text: message[index]['message'],
-                            fontColor: FontColor.black,
-                            fontSize: FontSize.md,
-                            fontWeight: FontWeight.w300,
-                            maxLines: pow(10, 10),
-                          ),
-                        ),
-                      ],
-                    ));
-              })),
+                            Padding(
+                                padding: EdgeInsets.symmetric(
+                                  vertical: _screenHeight * 0.01,
+                                ),
+                                child: CustomText(
+                                  text: 'Reçu le ' + message[index]['date'],
+                                  fontColor: FontColor.darkGrey,
+                                  fontSize: FontSize.sm,
+                                )),
+                            Container(
+                                height: 1,
+                                width: _screenWidth,
+                                color: Colors.grey[350]),
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                vertical: _screenWidth * 0.07,
+                              ),
+                              child: CustomText(
+                                text: message[index]['message'],
+                                fontColor: FontColor.black,
+                                fontSize: FontSize.md,
+                                fontWeight: FontWeight.w300,
+                                maxLines: pow(10, 10),
+                              ),
+                            ),
+                          ],
+                        ));
+                  })),
+        ),
+      ),
     );
   }
 }

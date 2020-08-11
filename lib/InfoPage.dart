@@ -105,57 +105,62 @@ class _InfoPageState extends State<InfoPage> {
     _screenHeight = MediaQuery.of(context).size.height;
     _screenWidth = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: CustomAppBar(
-          context: this.context,
-          heightScreen: _screenHeight,
-          widthScreen: _screenWidth),
-      body: SmartRefresher(
-        controller: _refreshController,
-        enablePullUp: false,
-        enablePullDown: false,
-        header: WaterDropMaterialHeader(),
-        onRefresh: () async {
-          await Future.delayed(Duration(milliseconds: 1000));
-          _refreshController.refreshCompleted();
-        },
-        child: Container(
-          child: Column(
-            children: <Widget>[
-              buildTopContent(),
-              buildInfoPage(
-                "Annuaire",
-                FontAwesome.book,
-                "/infoAnnuaire",
-                "Plan",
-                FontAwesome.map_1,
-                "/infoPlan",
+    return Container(
+      color: CustomText.textColor(FontColor.lightBlue),
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          appBar: CustomAppBar(
+              context: this.context,
+              heightScreen: _screenHeight,
+              widthScreen: _screenWidth),
+          body: SmartRefresher(
+            controller: _refreshController,
+            enablePullUp: false,
+            enablePullDown: false,
+            header: WaterDropMaterialHeader(),
+            onRefresh: () async {
+              await Future.delayed(Duration(milliseconds: 1000));
+              _refreshController.refreshCompleted();
+            },
+            child: Container(
+              child: Column(
+                children: <Widget>[
+                  buildTopContent(),
+                  buildInfoPage(
+                    "Annuaire",
+                    FontAwesome.book,
+                    "/infoAnnuaire",
+                    "Plan",
+                    FontAwesome.map_1,
+                    "/infoPlan",
+                  ),
+                  buildInfoPage(
+                    "EDT",
+                    FontAwesome.calendar_minus_o,
+                    "/infoEdt",
+                    "Vos Idées",
+                    FontAwesome.lightbulb,
+                    "/infoIdea",
+                  ),
+                  buildInfoPage(
+                    "Goodies",
+                    FontAwesome.shopping_bag,
+                    "/infoGoodies",
+                    '"Dance U Moove"',
+                    FontAwesome.music,
+                    "/infoDance",
+                  ),
+                ],
               ),
-              buildInfoPage(
-                "EDT",
-                FontAwesome.calendar_minus_o,
-                "/infoEdt",
-                "Vos Idées",
-                FontAwesome.lightbulb,
-                "/infoIdea",
-              ),
-              buildInfoPage(
-                "Goodies",
-                FontAwesome.shopping_bag,
-                "/infoGoodies",
-                '"Dance U Moove"',
-                FontAwesome.music,
-                "/infoDance",
-              ),
-            ],
+            ),
           ),
+          bottomNavigationBar: CustomBottomBar(
+              context: this.context,
+              heightScreen: _screenHeight,
+              widthScreen: _screenWidth),
         ),
       ),
-      bottomNavigationBar: CustomBottomBar(
-          context: this.context,
-          heightScreen: _screenHeight,
-          widthScreen: _screenWidth),
     );
   }
 }

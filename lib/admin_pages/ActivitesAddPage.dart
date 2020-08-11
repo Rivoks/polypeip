@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+// import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:polypeip/custom_icons/font_awesome_icons.dart';
 import 'package:polypeip/custom_widgets/CustomBackAppBar.dart';
@@ -201,14 +201,15 @@ class _ActivitesAddPageState extends State<ActivitesAddPage> {
           ),
           GestureDetector(
             onTap: () {
-              DatePicker.showDatePicker(context,
-                  showTitleActions: true,
-                  minTime: DateTime.now(),
-                  maxTime: DateTime(2050, 12, 31), onChanged: (date) {
-                print('change $date');
-              }, onConfirm: (date) {
-                print('confirm $date');
-              }, currentTime: DateTime.now(), locale: LocaleType.fr);
+              // DatePicker.showDatePicker(context,
+              //     showTitleActions: true,
+              //     minTime: DateTime.now(),
+              //     maxTime: DateTime(2050, 12, 31), onChanged: (date) {
+              //   print('change $date');
+              // }, onConfirm: (date) {
+              //   print('confirm $date');
+              // }, currentTime: DateTime.now(), locale: LocaleType.fr);
+              print("test");
             },
             child: Container(
               alignment: Alignment.centerLeft,

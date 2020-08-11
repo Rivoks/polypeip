@@ -124,42 +124,47 @@ class _MessagePageState extends State<MessagePage> {
       },
     ];
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: CustomAppBar(
-          context: this.context,
-          heightScreen: _screenHeight,
-          widthScreen: _screenWidth),
-      body: SmartRefresher(
-        controller: _refreshController,
-        enablePullUp: true,
-        header: WaterDropMaterialHeader(),
-        onRefresh: () async {
-          await Future.delayed(Duration(milliseconds: 1000));
-          _refreshController.refreshCompleted();
-        },
-        onLoading: () async {
-          print("load");
-        },
-        child: ListView.builder(
-            itemCount: listMsg.length,
-            itemBuilder: (context, index) {
-              return Column(
-                children: <Widget>[
-                  (index == 0 ? buildTopContent() : Container()),
-                  buildListMsg(
-                    listMsg[index]['title'],
-                    listMsg[index]['date'],
-                    listMsg[index]['_id'],
-                  )
-                ],
-              );
-            }),
+    return Container(
+      color: CustomText.textColor(FontColor.lightBlue),
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          appBar: CustomAppBar(
+              context: this.context,
+              heightScreen: _screenHeight,
+              widthScreen: _screenWidth),
+          body: SmartRefresher(
+            controller: _refreshController,
+            enablePullUp: true,
+            header: WaterDropMaterialHeader(),
+            onRefresh: () async {
+              await Future.delayed(Duration(milliseconds: 1000));
+              _refreshController.refreshCompleted();
+            },
+            onLoading: () async {
+              print("load");
+            },
+            child: ListView.builder(
+                itemCount: listMsg.length,
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: <Widget>[
+                      (index == 0 ? buildTopContent() : Container()),
+                      buildListMsg(
+                        listMsg[index]['title'],
+                        listMsg[index]['date'],
+                        listMsg[index]['_id'],
+                      )
+                    ],
+                  );
+                }),
+          ),
+          bottomNavigationBar: CustomBottomBar(
+              context: this.context,
+              heightScreen: _screenHeight,
+              widthScreen: _screenWidth),
+        ),
       ),
-      bottomNavigationBar: CustomBottomBar(
-          context: this.context,
-          heightScreen: _screenHeight,
-          widthScreen: _screenWidth),
     );
   }
 }

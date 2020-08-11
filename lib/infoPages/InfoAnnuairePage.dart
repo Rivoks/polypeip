@@ -291,45 +291,61 @@ class _InfoAnnuairePageState extends State<InfoAnnuairePage> {
     double _screenHeight = MediaQuery.of(context).size.height;
     double _screenWidth = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-        backgroundColor: Colors.white,
-        appBar: CustomBackAppBar(
-            context: this.context,
-            heightScreen: _screenHeight,
-            widthScreen: _screenWidth),
-        body: Container(
-          child: _isTapped == false
-              ? Column(
-                  children: <Widget>[
-                    buildTopContent(_screenHeight, _screenWidth),
-                    buildParamsContainer(
-                      _screenHeight,
-                      _screenWidth,
-                      "Contact",
-                      false,
-                    ),
-                    buildParamsContainer(
-                      _screenHeight,
-                      _screenWidth,
-                      "Réseaux sociaux",
-                      false,
-                    ),
-                    buildParamsContainer(
-                      _screenHeight,
-                      _screenWidth,
-                      "Liens utiles",
-                      true,
-                    ),
-                    Padding(padding: EdgeInsets.only(top: _screenHeight * 0.05))
-                  ],
-                )
-              : Column(
-                  children: <Widget>[
-                    buildTopContent(_screenHeight, _screenWidth),
-                    buildTopBar(_screenHeight, _screenWidth, _currentSettings),
-                    buildAnnuaire(_screenHeight, _screenWidth, _currentSettings)
-                  ],
-                ),
-        ));
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          stops: [0.4, 0.4],
+          colors: [CustomText.textColor(FontColor.lightBlue), Colors.white],
+        ),
+      ),
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          appBar: CustomBackAppBar(
+              context: this.context,
+              heightScreen: _screenHeight,
+              widthScreen: _screenWidth),
+          body: Container(
+            child: _isTapped == false
+                ? Column(
+                    children: <Widget>[
+                      buildTopContent(_screenHeight, _screenWidth),
+                      buildParamsContainer(
+                        _screenHeight,
+                        _screenWidth,
+                        "Contact",
+                        false,
+                      ),
+                      buildParamsContainer(
+                        _screenHeight,
+                        _screenWidth,
+                        "Réseaux sociaux",
+                        false,
+                      ),
+                      buildParamsContainer(
+                        _screenHeight,
+                        _screenWidth,
+                        "Liens utiles",
+                        true,
+                      ),
+                      Padding(
+                          padding: EdgeInsets.only(top: _screenHeight * 0.05))
+                    ],
+                  )
+                : Column(
+                    children: <Widget>[
+                      buildTopContent(_screenHeight, _screenWidth),
+                      buildTopBar(
+                          _screenHeight, _screenWidth, _currentSettings),
+                      buildAnnuaire(
+                          _screenHeight, _screenWidth, _currentSettings)
+                    ],
+                  ),
+          ),
+        ),
+      ),
+    );
   }
 }

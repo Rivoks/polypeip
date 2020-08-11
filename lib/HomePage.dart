@@ -189,34 +189,40 @@ class _HomePageState extends State<HomePage> {
     double _carouselHeight =
         _screenHeight - _screenHeight * (topBarHeightPercent + 0.2);
 
-    return Scaffold(
-      key: _scaffoldKey,
-      backgroundColor: Colors.white,
-      appBar: CustomAppBar(
-          context: this.context,
-          heightScreen: _screenHeight,
-          widthScreen: _screenWidth),
-      body: SmartRefresher(
-        controller: _refreshController,
-        enablePullDown: true,
-        enablePullUp: false,
-        header: WaterDropMaterialHeader(),
-        onRefresh: () async {
-          await Future.delayed(Duration(milliseconds: 1000));
-          _refreshController.refreshCompleted();
-        },
-        child: new Stack(children: <Widget>[
-          constructTopBar(_screenHeight, _screenWidth),
-          Padding(
-            padding: EdgeInsets.only(top: _screenHeight * topBarHeightPercent),
-            child: buildSlider(_carouselHeight, _screenWidth),
+    return Container(
+      color: CustomText.textColor(FontColor.lightBlue),
+      child: SafeArea(
+        child: Scaffold(
+          key: _scaffoldKey,
+          backgroundColor: Colors.white,
+          appBar: CustomAppBar(
+              context: this.context,
+              heightScreen: _screenHeight,
+              widthScreen: _screenWidth),
+          body: SmartRefresher(
+            controller: _refreshController,
+            enablePullDown: true,
+            enablePullUp: false,
+            header: WaterDropMaterialHeader(),
+            onRefresh: () async {
+              await Future.delayed(Duration(milliseconds: 1000));
+              _refreshController.refreshCompleted();
+            },
+            child: new Stack(children: <Widget>[
+              constructTopBar(_screenHeight, _screenWidth),
+              Padding(
+                padding:
+                    EdgeInsets.only(top: _screenHeight * topBarHeightPercent),
+                child: buildSlider(_carouselHeight, _screenWidth),
+              ),
+            ]),
           ),
-        ]),
+          bottomNavigationBar: CustomBottomBar(
+              context: this.context,
+              heightScreen: _screenHeight,
+              widthScreen: _screenWidth),
+        ),
       ),
-      bottomNavigationBar: CustomBottomBar(
-          context: this.context,
-          heightScreen: _screenHeight,
-          widthScreen: _screenWidth),
     );
   }
 }

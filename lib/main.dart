@@ -61,9 +61,11 @@ class MyApp extends StatelessWidget {
         title: 'Polypeip',
         // locale: DevicePreview.of(context)?.locale,
         // builder: DevicePreview.appBuilder,
+        // darkTheme: ThemeData.dark(),
         theme: ThemeData(
-            primaryColor: Color(0xff00adef),
-            primaryIconTheme: IconThemeData(color: Colors.white)),
+          primaryColor: Color(0xff00adef),
+          primaryIconTheme: IconThemeData(color: Colors.white),
+        ),
         initialRoute: "/",
         onGenerateRoute: (settings) {
           switch (settings.name) {

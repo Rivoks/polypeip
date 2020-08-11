@@ -189,33 +189,45 @@ class _InfoGoodiesPageState extends State<InfoGoodiesPage> {
     double _screenHeight = MediaQuery.of(context).size.height;
     double _screenWidth = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: CustomBackAppBar(
-          context: this.context,
-          heightScreen: _screenHeight,
-          widthScreen: _screenWidth),
-      body: SmartRefresher(
-        controller: _refreshController,
-        enablePullUp: false,
-        header: WaterDropMaterialHeader(),
-        onRefresh: () async {
-          await Future.delayed(Duration(milliseconds: 1000));
-          _refreshController.refreshCompleted();
-        },
-        child: ListView.builder(
-          itemCount: 1,
-          itemBuilder: (context, index) {
-            return Column(
-              children: <Widget>[
-                buildTopContent(_screenHeight, _screenWidth),
-                Padding(
-                    padding:
-                        EdgeInsets.symmetric(vertical: _screenHeight * 0.02)),
-                buildGoodiesCard(_screenHeight, _screenWidth),
-              ],
-            );
-          },
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          stops: [0.4, 0.4],
+          colors: [CustomText.textColor(FontColor.lightBlue), Colors.white],
+        ),
+      ),
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          appBar: CustomBackAppBar(
+              context: this.context,
+              heightScreen: _screenHeight,
+              widthScreen: _screenWidth),
+          body: SmartRefresher(
+            controller: _refreshController,
+            enablePullUp: false,
+            header: WaterDropMaterialHeader(),
+            onRefresh: () async {
+              await Future.delayed(Duration(milliseconds: 1000));
+              _refreshController.refreshCompleted();
+            },
+            child: ListView.builder(
+              itemCount: 1,
+              itemBuilder: (context, index) {
+                return Column(
+                  children: <Widget>[
+                    buildTopContent(_screenHeight, _screenWidth),
+                    Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: _screenHeight * 0.02)),
+                    buildGoodiesCard(_screenHeight, _screenWidth),
+                  ],
+                );
+              },
+            ),
+          ),
         ),
       ),
     );
