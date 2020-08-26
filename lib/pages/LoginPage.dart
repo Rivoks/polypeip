@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:polypeip/custom_widgets/CustomRoundedButton.dart';
 import 'package:polypeip/custom_widgets/CustomTextArea.dart';
 
-import 'custom_widgets/CustomText.dart';
+import '../custom_widgets/CustomText.dart';
 
 class LoginPage extends StatefulWidget {
   @override

@@ -7,7 +7,7 @@ import 'package:polypeip/custom_widgets/CustomNewsAlt.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import 'custom_widgets/CustomTopbar.dart';
+import '../custom_widgets/CustomTopbar.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
   List<Map<String, String>> posts = [
     {
       "_id": "16ea84d9az4az8",
-      "title": "Quais St Bernard - 18h00",
+      "title": "Quais St Bernard - 18h42",
       "date": "01/05/2020",
       "description":
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas a congue odio, ut ultrices metus. Cras tempor magna id ante posuere, non egestas sapien laoreet. Fusce venenatis sed odio sed varius.",

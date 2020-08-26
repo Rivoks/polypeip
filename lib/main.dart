@@ -1,56 +1,57 @@
-// import 'package:device_preview/device_preview.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:polypeip/EventsPage.dart';
-import 'package:polypeip/HomePage.dart';
-import 'package:polypeip/InfoPage.dart';
-import 'package:polypeip/LaunchPage.dart';
-import 'package:polypeip/LoginPage.dart';
-import 'package:polypeip/PostEventPage.dart';
-import 'package:polypeip/PostEventPageOld.dart';
-import 'package:polypeip/PostMessagePage.dart';
-import 'package:polypeip/PostPage.dart';
-import 'package:polypeip/SettingsPage.dart';
-import 'package:polypeip/MessagePage.dart';
-import 'package:polypeip/admin_pages/ActivitesAddPage.dart';
-import 'package:polypeip/admin_pages/ActivitesEditPage.dart';
-import 'package:polypeip/admin_pages/ActivitesPage.dart';
-import 'package:polypeip/admin_pages/AnnuaireAddPage.dart';
-import 'package:polypeip/admin_pages/AnnuaireEditPage.dart';
-import 'package:polypeip/admin_pages/EventAddPage.dart';
-import 'package:polypeip/admin_pages/EventEditPage.dart';
-import 'package:polypeip/admin_pages/GoodiesAddPage.dart';
-import 'package:polypeip/admin_pages/GoodiesEditPage.dart';
-import 'package:polypeip/admin_pages/GoodiesPage.dart';
-import 'package:polypeip/admin_pages/LinksAddPage.dart';
-import 'package:polypeip/admin_pages/LinksEditPage.dart';
-import 'package:polypeip/admin_pages/ListAnnuairePage.dart';
-import 'package:polypeip/admin_pages/ListEventsPage.dart';
-import 'package:polypeip/admin_pages/ListLinksPage.dart';
-import 'package:polypeip/admin_pages/ListReseauxPage.dart';
-import 'package:polypeip/admin_pages/MessageWritePage.dart';
-import 'package:polypeip/admin_pages/MessageriePage.dart';
-import 'package:polypeip/admin_pages/PlanEdtAddPage.dart';
-import 'package:polypeip/admin_pages/PlanEdtEditPage.dart';
-import 'package:polypeip/admin_pages/PlanEdtPage.dart';
-import 'package:polypeip/admin_pages/PostMessageriePage.dart';
-import 'package:polypeip/admin_pages/PostMessagerieReceviedPage.dart';
-import 'package:polypeip/admin_pages/ReseauxAddPage.dart';
-import 'package:polypeip/admin_pages/ReseauxEditPage.dart';
-import 'package:polypeip/infoPages/InfoAnnuairePage.dart';
-import 'package:polypeip/infoPages/InfoDancePage.dart';
-import 'package:polypeip/infoPages/InfoEdtPage.dart';
-import 'package:polypeip/infoPages/InfoGoodiesPage.dart';
-import 'package:polypeip/infoPages/InfoIdeaPage.dart';
-import 'package:polypeip/infoPages/InfoPlanPage.dart';
+import 'package:polypeip/pages/EventsPage.dart';
+import 'package:polypeip/pages/HomePage.dart';
+import 'package:polypeip/pages/InfoPage.dart';
+import 'package:polypeip/pages/LaunchPage.dart';
+import 'package:polypeip/pages/LoginPage.dart';
+import 'package:polypeip/pages/PostEventPage.dart';
+import 'package:polypeip/pages/PostEventPageOld.dart';
+import 'package:polypeip/pages/PostMessagePage.dart';
+import 'package:polypeip/pages/PostPage.dart';
+import 'package:polypeip/pages/SettingsPage.dart';
+import 'package:polypeip/pages/MessagePage.dart';
+import 'package:polypeip/pages/admin_pages/ActivitesAddPage.dart';
+import 'package:polypeip/pages/admin_pages/ActivitesEditPage.dart';
+import 'package:polypeip/pages/admin_pages/ActivitesPage.dart';
+import 'package:polypeip/pages/admin_pages/AnnuaireAddPage.dart';
+import 'package:polypeip/pages/admin_pages/AnnuaireEditPage.dart';
+import 'package:polypeip/pages/admin_pages/EventAddPage.dart';
+import 'package:polypeip/pages/admin_pages/EventEditPage.dart';
+import 'package:polypeip/pages/admin_pages/GoodiesAddPage.dart';
+import 'package:polypeip/pages/admin_pages/GoodiesEditPage.dart';
+import 'package:polypeip/pages/admin_pages/GoodiesPage.dart';
+import 'package:polypeip/pages/admin_pages/LinksAddPage.dart';
+import 'package:polypeip/pages/admin_pages/LinksEditPage.dart';
+import 'package:polypeip/pages/admin_pages/ListAnnuairePage.dart';
+import 'package:polypeip/pages/admin_pages/ListEventsPage.dart';
+import 'package:polypeip/pages/admin_pages/ListLinksPage.dart';
+import 'package:polypeip/pages/admin_pages/ListReseauxPage.dart';
+import 'package:polypeip/pages/admin_pages/MessageWritePage.dart';
+import 'package:polypeip/pages/admin_pages/MessageriePage.dart';
+import 'package:polypeip/pages/admin_pages/PlanEdtAddPage.dart';
+import 'package:polypeip/pages/admin_pages/PlanEdtEditPage.dart';
+import 'package:polypeip/pages/admin_pages/PlanEdtPage.dart';
+import 'package:polypeip/pages/admin_pages/PostMessageriePage.dart';
+import 'package:polypeip/pages/admin_pages/PostMessagerieReceviedPage.dart';
+import 'package:polypeip/pages/admin_pages/ReseauxAddPage.dart';
+import 'package:polypeip/pages/admin_pages/ReseauxEditPage.dart';
+import 'package:polypeip/pages/infoPages/InfoAnnuairePage.dart';
+import 'package:polypeip/pages/infoPages/InfoDancePage.dart';
+import 'package:polypeip/pages/infoPages/InfoEdtPage.dart';
+import 'package:polypeip/pages/infoPages/InfoGoodiesPage.dart';
+import 'package:polypeip/pages/infoPages/InfoIdeaPage.dart';
+import 'package:polypeip/pages/infoPages/InfoPlanPage.dart';
 
-// void main() {
-//   runApp(DevicePreview(
-//     builder: (context) => MyApp(),
-//   ));
-// }
-void main() => runApp(MyApp());
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) {
+    runApp(new MyApp());
+  });
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -59,9 +60,6 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Polypeip',
-        // locale: DevicePreview.of(context)?.locale,
-        // builder: DevicePreview.appBuilder,
-        // darkTheme: ThemeData.dark(),
         theme: ThemeData(
           primaryColor: Color(0xff00adef),
           primaryIconTheme: IconThemeData(color: Colors.white),

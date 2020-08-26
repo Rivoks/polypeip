@@ -7,7 +7,7 @@ import 'package:polypeip/custom_widgets/CustomBackAppBar.dart';
 import 'package:polypeip/custom_widgets/CustomBottomBarAlt.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
 import 'package:polypeip/custom_widgets/CustomTopbarAlt.dart';
-import 'package:polypeip/infoPages/InfoGoodiesPage.dart';
+import 'package:polypeip/pages/infoPages/InfoGoodiesPage.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class MessageriePage extends StatefulWidget {

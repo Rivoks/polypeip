@@ -7,7 +7,7 @@ import 'package:polypeip/custom_widgets/CustomRate.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import 'custom_widgets/CustomBackAppBar.dart';
+import '../custom_widgets/CustomBackAppBar.dart';
 
 class PostEventPageOld extends StatefulWidget {
   PostEventPageOld({@required this.postId});

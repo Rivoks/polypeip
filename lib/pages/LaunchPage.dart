@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'custom_widgets/CustomText.dart';
+import '../custom_widgets/CustomText.dart';
 
 class LaunchPage extends StatefulWidget {
   @override

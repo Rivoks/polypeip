@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:polypeip/LoginPage.dart';
+import 'package:polypeip/pages/LoginPage.dart';
 import 'package:polypeip/custom_widgets/CustomBackAppBar.dart';
 import 'package:polypeip/custom_widgets/CustomRoundedButton.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';

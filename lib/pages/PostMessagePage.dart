@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import 'custom_widgets/CustomBackAppBar.dart';
+import '../custom_widgets/CustomBackAppBar.dart';
 
 class PostMessagePage extends StatefulWidget {
   PostMessagePage({@required this.postId});

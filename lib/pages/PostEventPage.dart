@@ -5,7 +5,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import 'custom_widgets/CustomBackAppBar.dart';
+import '../custom_widgets/CustomBackAppBar.dart';
 
 class PostEventPage extends StatefulWidget {
   PostEventPage({@required this.postId});
