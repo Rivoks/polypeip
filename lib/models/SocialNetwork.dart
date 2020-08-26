@@ -1,17 +1,18 @@
-class Link {
+class SocialNetwork {
   final String id;
   final String socialNetwork;
   final String value;
 
-  Link({
+  SocialNetwork({
     this.id,
     this.socialNetwork,
     this.value,
   });
 
-  factory Link.fromJson(Map<String, dynamic> link) => Link(
-        id: link['_id'],
-        socialNetwork: link['socialNetwork'],
-        value: link['value'],
+  factory SocialNetwork.fromJson(Map<String, dynamic> socialNetwork) =>
+      SocialNetwork(
+        id: socialNetwork['_id'],
+        socialNetwork: socialNetwork['socialNetwork'],
+        value: socialNetwork['value'],
       );
 }

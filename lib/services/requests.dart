@@ -1,87 +1,99 @@
+import 'package:flutter/material.dart';
+import 'package:polypeip/models/Post.dart';
 import 'request.dart';
 
 // POSTS
-Future getPosts() {}
+Future<List<Post>> getPosts() async {
+  List<Post> posts;
 
-Future getPost() {}
+  await request(RequestType.get, '/posts/').then((res) {
+    posts = (res['data']['posts'] as List<dynamic>)
+        .map((post) => Post.fromJson(post))
+        .toList();
+  });
 
-Future addPost() {}
+  return posts;
+}
 
-Future ratePost() {}
+Future getPost() async {}
 
-Future editPost() {}
+Future addPost() async {}
 
-Future removePost() {}
+Future ratePost() async {}
+
+Future editPost() async {}
+
+Future removePost() async {}
 
 // EVENTS
-Future getNextEvents() {}
+Future getNextEvents() async {}
 
-Future getPastEvents() {}
+Future getPastEvents() async {}
 
-Future getEvent() {}
+Future getEvent() async {}
 
-Future addEvent() {}
+Future addEvent() async {}
 
-Future editEvent() {}
+Future editEvent() async {}
 
-Future removeEvent() {}
+Future removeEvent() async {}
 
-Future rateEvent() {}
+Future rateEvent() async {}
 
-Future commentEvent() {}
+Future commentEvent() async {}
 
 // MESSAGES
-Future getMessages() {}
+Future getMessages() async {}
 
-Future getMessage() {}
+Future getMessage() async {}
 
-Future sendMessage() {}
+Future sendMessage() async {}
 
 // INFOS
 /* annuary */
-Future getContacts() {}
+Future getContacts() async {}
 
-Future editContact() {}
+Future editContact() async {}
 
-Future removeContact() {}
+Future removeContact() async {}
 
 /* social network */
-Future getSocialNetworks() {}
+Future getSocialNetworks() async {}
 
-Future editSocialNetworks() {}
+Future editSocialNetworks() async {}
 
-Future removeSocialNetworks() {}
+Future removeSocialNetworks() async {}
 
 /* links */
-Future getLinks() {}
+Future getLinks() async {}
 
-Future editLink() {}
+Future editLink() async {}
 
-Future removeLink() {}
+Future removeLink() async {}
 
 /* goodies */
-Future getGoodies() {}
+Future getGoodies() async {}
 
-Future addGoodie() {}
+Future addGoodie() async {}
 
-Future editGoodie() {}
+Future editGoodie() async {}
 
-Future removeGoodie() {}
+Future removeGoodie() async {}
 
 /* plan & edt */
-Future editPlan() {}
+Future editPlan() async {}
 
-Future addEdt() {}
+Future addEdt() async {}
 
-Future editEdt() {}
+Future editEdt() async {}
 
-Future removeEdt() {}
+Future removeEdt() async {}
 
 // SETTINGS
-Future getNotificationStatus() {}
+Future getNotificationStatus() async {}
 
-Future setNotificationStatus() {}
+Future setNotificationStatus() async {}
 
-Future getSupport() {}
+Future getSupport() async {}
 
-Future getAppVersion() {}
+Future getAppVersion() async {}

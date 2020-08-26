@@ -1,4 +1,4 @@
-class Goodie {
+class Post {
   final String id;
   final String name;
   final String content;
@@ -8,7 +8,7 @@ class Goodie {
   final double nbTotalUnlikes;
   final DateTime date;
 
-  Goodie({
+  Post({
     this.id,
     this.name,
     this.content,
@@ -19,7 +19,7 @@ class Goodie {
     this.date,
   });
 
-  factory Goodie.fromJson(Map<String, dynamic> goodie) => Goodie(
+  factory Post.fromJson(Map<String, dynamic> goodie) => Post(
         id: goodie['_id'],
         name: goodie['name'],
         content: goodie['content'],
