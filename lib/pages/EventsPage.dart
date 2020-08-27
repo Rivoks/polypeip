@@ -6,6 +6,8 @@ import 'package:polypeip/custom_widgets/CustomAppBar.dart';
 import 'package:polypeip/custom_widgets/CustomBottomBar.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
 import 'package:polypeip/custom_widgets/CustomTopbarAlt.dart';
+import 'package:polypeip/models/Event.dart';
+import 'package:polypeip/services/requests.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class EventsPage extends StatefulWidget {
@@ -19,8 +21,9 @@ class _EventsPageState extends State<EventsPage> {
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-
-  List<Map<String, String>> listEvents = [
+  List<Event> oldEvents = [];
+  List<Event> newEvents = [];
+  List<Map<String, String>> lEvents = [
     {
       "_id": "618ze9f4zfze496",
       "title": "Soirée Cave Esclangon",
@@ -45,6 +48,21 @@ class _EventsPageState extends State<EventsPage> {
   CarouselController buttonCarouselController = CarouselController();
 
   final double topBarHeightPercent = 0.06;
+
+  @override
+  void initState() {
+    super.initState();
+    getEvents().then((events) {
+      events.forEach((event) {
+        setState(() {
+          if (event.date.isBefore(DateTime.now()))
+            oldEvents.add(event);
+          else
+            newEvents.add(event);
+        });
+      });
+    });
+  }
 
   Widget buildTopContent() {
     return Container(
@@ -93,26 +111,20 @@ class _EventsPageState extends State<EventsPage> {
       ),
       items: [
         ListView.builder(
-            itemCount: listEvents.length,
+            itemCount: newEvents.length == 0 ? 1 : newEvents.length,
             itemBuilder: (context, index) {
-              return buildListEvents(
-                listEvents[index]['id'],
-                listEvents[index]['title'],
-                listEvents[index]['date'],
-                listEvents[index]['hour'],
-                listEvents[index]['rate'],
-              );
+              if (newEvents.length == 0) return Text("Pas d'events à venir");
+
+              Event event = newEvents[index];
+              return buildevents(event);
             }),
         ListView.builder(
-            itemCount: listEvents.length,
+            itemCount: oldEvents.length == 0 ? 1 : oldEvents.length,
             itemBuilder: (context, index) {
-              return buildListEvents(
-                listEvents[index]['id'],
-                listEvents[index]['title'],
-                listEvents[index]['date'],
-                listEvents[index]['hour'],
-                listEvents[index]['rate'],
-              );
+              if (oldEvents.length == 0) return Text("Pas d'events passés");
+
+              Event event = oldEvents[index];
+              return buildevents(event);
             }),
       ],
     );
@@ -189,7 +201,7 @@ class _EventsPageState extends State<EventsPage> {
     );
   }
 
-  Widget buildListEvents(_id, title, date, hour, rate) {
+  Widget buildevents(Event event) {
     return GestureDetector(
       child: Container(
         decoration: BoxDecoration(
@@ -214,13 +226,15 @@ class _EventsPageState extends State<EventsPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 CustomText(
-                  text: title,
+                  text: event.name,
                   fontColor: FontColor.blue,
                   fontSize: FontSize.md,
                   fontWeight: FontWeight.bold,
                 ),
                 CustomText(
-                  text: date + ' à ' + hour,
+                  text: event.date.toIso8601String() +
+                      ' à ' +
+                      event.date.hour.toString(),
                   fontColor: FontColor.darkGrey,
                   fontSize: FontSize.xs,
                   fontWeight: FontWeight.normal,
@@ -232,7 +246,10 @@ class _EventsPageState extends State<EventsPage> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   CustomText(
-                    text: rate + '/5',
+                    text: event.nbTotalRate == 0
+                        ? "0"
+                        : (event.totalRate / event.nbTotalRate).toString() +
+                            '/5',
                     fontColor: FontColor.blue,
                     fontSize: FontSize.md,
                     fontWeight: FontWeight.w700,
@@ -253,10 +270,10 @@ class _EventsPageState extends State<EventsPage> {
       onTap: () {
         if (listChoice == 'new') {
           return Navigator.pushNamed(context, "/postEvent",
-              arguments: {"postId": _id});
+              arguments: {"eventId": event.id, "isPassed": false});
         } else {
           return Navigator.pushNamed(context, "/postEventOld",
-              arguments: {"postId": _id});
+              arguments: {"eventId": event.id, "isPassed": true});
         }
       },
     );
@@ -276,28 +293,29 @@ class _EventsPageState extends State<EventsPage> {
               heightScreen: _screenHeight,
               widthScreen: _screenWidth),
           body: SmartRefresher(
-              controller: RefreshController(initialRefresh: false),
-              enablePullUp: true,
-              header: WaterDropMaterialHeader(),
-              onRefresh: () async {
-                await Future.delayed(Duration(milliseconds: 1000));
-                _refreshController.refreshCompleted();
+            controller: RefreshController(initialRefresh: false),
+            enablePullUp: true,
+            header: WaterDropMaterialHeader(),
+            onRefresh: () async {
+              await Future.delayed(Duration(milliseconds: 1000));
+              _refreshController.refreshCompleted();
+            },
+            onLoading: () async {
+              print("loading");
+            },
+            child: ListView.builder(
+              itemCount: 1,
+              itemBuilder: (context, index) {
+                return Column(
+                  children: <Widget>[
+                    (index == 0) ? buildTopContent() : Container(),
+                    (index == 0) ? constructTopBar() : Container(),
+                    buildSlider(_screenHeight, _screenWidth)
+                  ],
+                );
               },
-              onLoading: () async {
-                print("loading");
-              },
-              child: ListView.builder(
-                itemCount: listEvents.length,
-                itemBuilder: (context, index) {
-                  return Column(
-                    children: <Widget>[
-                      (index == 0) ? buildTopContent() : Container(),
-                      (index == 0) ? constructTopBar() : Container(),
-                      buildSlider(_screenHeight, _screenWidth)
-                    ],
-                  );
-                },
-              )),
+            ),
+          ),
           bottomNavigationBar: CustomBottomBar(
               context: this.context,
               heightScreen: _screenHeight,

@@ -5,14 +5,18 @@ import 'package:flutter/services.dart';
 // import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:polypeip/custom_widgets/CustomRate.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
+import 'package:polypeip/models/Event.dart';
+import 'package:polypeip/services/requests.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../custom_widgets/CustomBackAppBar.dart';
 
 class PostEventPageOld extends StatefulWidget {
-  PostEventPageOld({@required this.postId});
+  PostEventPageOld({
+    @required this.eventId,
+  });
 
-  final String postId;
+  final String eventId;
 
   @override
   _PostEventPageOldState createState() => _PostEventPageOldState();
@@ -20,6 +24,7 @@ class PostEventPageOld extends StatefulWidget {
 
 class _PostEventPageOldState extends State<PostEventPageOld> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  Event event;
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -27,23 +32,20 @@ class _PostEventPageOldState extends State<PostEventPageOld> {
   int rate = 0;
 
   @override
+  void initState() {
+    super.initState();
+
+    getEvent(widget.eventId, false).then((value) {
+      setState(() => event = value);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     double _screenHeight = MediaQuery.of(context).size.height;
     double _screenWidth = MediaQuery.of(context).size.width;
 
     Color blue = CustomText.textColor(FontColor.blue);
-
-    List<Map<String, String>> event = [
-      {
-        "_id": "618ze9f4zfze496",
-        "title": "Soirée Cave Esclangon",
-        "date": "04/05/2020",
-        "hour": "18h00",
-        "rate": "4.5",
-        "description":
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc nec neque sapien. Proin suscipit commodo tellus, efficitur finibus nulla sollicitudin sagittis. Duis neque turpis, euismod vel porta non, varius pretium diam. Etiam non posuere justo. Vestibulum nec enim non tortor finibus pulvinar a ac ex. Mauris tempor, risus non accumsan egestas, felis erat lacinia neque, sed ornare mi ligula a erat. Praesent et augue consequat felis feugiat tincidunt. Nam libero urna, faucibus nec justo quis, convallis condimentum orci. Morbi nulla justo, venenatis et augue vel, ornare dapibus sapien. Nulla sed sodales felis. Etiam dictum sapien id lacus sagittis consequat. "
-      },
-    ];
 
     List<Map<String, dynamic>> comment = [
       {
@@ -96,7 +98,7 @@ class _PostEventPageOldState extends State<PostEventPageOld> {
               _refreshController.refreshCompleted();
             },
             child: ListView.builder(
-              itemCount: event.length,
+              itemCount: event != null ? 1 : 0,
               itemBuilder: (context, index) {
                 return Column(
                   children: <Widget>[
@@ -111,7 +113,7 @@ class _PostEventPageOldState extends State<PostEventPageOld> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             CustomText(
-                              text: event[index]['title'],
+                              text: event.name,
                               fontColor: FontColor.black,
                               fontSize: FontSize.xl,
                               fontWeight: FontWeight.bold,
@@ -121,10 +123,7 @@ class _PostEventPageOldState extends State<PostEventPageOld> {
                                   vertical: _screenHeight * 0.01,
                                 ),
                                 child: CustomText(
-                                  text: 'Le ' +
-                                      event[index]['date'] +
-                                      ' à ' +
-                                      event[index]['hour'],
+                                  text: event.date.toIso8601String(),
                                   fontColor: FontColor.darkGrey,
                                   fontSize: FontSize.sm,
                                 )),
@@ -137,7 +136,7 @@ class _PostEventPageOldState extends State<PostEventPageOld> {
                                 vertical: _screenWidth * 0.07,
                               ),
                               child: CustomText(
-                                text: event[index]['description'],
+                                text: event.description,
                                 fontColor: FontColor.black,
                                 fontSize: FontSize.md,
                                 fontWeight: FontWeight.w400,

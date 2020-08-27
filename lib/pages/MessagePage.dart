@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:polypeip/custom_widgets/CustomAppBar.dart';
 import 'package:polypeip/custom_widgets/CustomBottomBar.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
+import 'package:polypeip/models/Message.dart';
+import 'package:polypeip/pages/PostMessagePage.dart';
+import 'package:polypeip/services/requests.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class MessagePage extends StatefulWidget {
@@ -12,8 +16,18 @@ class MessagePage extends StatefulWidget {
 class _MessagePageState extends State<MessagePage> {
   double _screenHeight;
   double _screenWidth;
+  List<Message> messages = [];
 
-  Widget buildListMsg(title, date, id) {
+  @override
+  void initState() {
+    super.initState();
+
+    getMessages().then((res) {
+      setState(() => messages = res);
+    });
+  }
+
+  Widget buildListMsg(Message msg) {
     return GestureDetector(
       child: Container(
           decoration: BoxDecoration(
@@ -41,7 +55,7 @@ class _MessagePageState extends State<MessagePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       CustomText(
-                        text: title,
+                        text: msg.subject,
                         fontColor: FontColor.black,
                         fontSize: FontSize.md,
                         fontWeight: FontWeight.w500,
@@ -50,7 +64,7 @@ class _MessagePageState extends State<MessagePage> {
                         overflowStyle: TextOverflow.ellipsis,
                       ),
                       CustomText(
-                        text: date,
+                        text: msg.date.toIso8601String(),
                         fontColor: FontColor.darkGrey,
                         fontSize: FontSize.xs,
                         maxLines: 1,
@@ -64,10 +78,14 @@ class _MessagePageState extends State<MessagePage> {
             ],
           )),
       onTap: () {
-        return Navigator.pushNamed(
+        Navigator.push(
           context,
-          "/postMessage",
-          arguments: {"postMessageId": id},
+          PageTransition(
+            child: PostMessagePage(
+              message: msg,
+            ),
+            type: PageTransitionType.downToUp,
+          ),
         );
       },
     );
@@ -106,24 +124,6 @@ class _MessagePageState extends State<MessagePage> {
     _screenHeight = MediaQuery.of(context).size.height;
     _screenWidth = MediaQuery.of(context).size.width;
 
-    List<Map<String, String>> listMsg = [
-      {
-        "_id": "1a9e4ze98za4",
-        "title": "Annonce Polypeip Got Talents",
-        "date": "03/05/2020",
-      },
-      {
-        "_id": "1a9e4ze98za4",
-        "title": "Annonce Polypeip Got Talents",
-        "date": "03/05/2020",
-      },
-      {
-        "_id": "1a9e4ze98za4",
-        "title": "Annonce Polypeip Got Talents",
-        "date": "03/05/2020",
-      },
-    ];
-
     return Container(
       color: CustomText.textColor(FontColor.lightBlue),
       child: SafeArea(
@@ -145,16 +145,12 @@ class _MessagePageState extends State<MessagePage> {
               print("load");
             },
             child: ListView.builder(
-                itemCount: listMsg.length,
+                itemCount: messages.length,
                 itemBuilder: (context, index) {
                   return Column(
                     children: <Widget>[
                       (index == 0 ? buildTopContent() : Container()),
-                      buildListMsg(
-                        listMsg[index]['title'],
-                        listMsg[index]['date'],
-                        listMsg[index]['_id'],
-                      )
+                      buildListMsg(messages[index])
                     ],
                   );
                 }),

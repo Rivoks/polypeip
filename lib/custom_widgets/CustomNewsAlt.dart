@@ -8,7 +8,7 @@ class CustomNewsAlt extends StatefulWidget {
   final String newsId;
   final String newsTitle;
   final String newsDescription;
-  final String newsDate;
+  final DateTime newsDate;
   final String newsImage;
 
   final imageHeight = 0.2;
@@ -89,7 +89,7 @@ class _CustomNewsAlt extends State<CustomNewsAlt> {
                       top: widget.heightScreen * 0.01,
                       left: widget.widthScreen * 0.03),
                   child: CustomText(
-                    text: widget.newsDate,
+                    text: widget.newsDate.toIso8601String(),
                     fontColor: FontColor.darkGrey,
                     fontSize: FontSize.xs,
                     alignment: TextAlign.start,

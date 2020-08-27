@@ -21,6 +21,6 @@ class Contact {
         surname: contact['surname'],
         tel: contact['tel'],
         email: contact['email'],
-        role: contact['role'] ? contact['role'] : 'support',
+        role: contact['role'] != null ? contact['role'] : 'support',
       );
 }

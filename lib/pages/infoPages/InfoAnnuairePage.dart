@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:polypeip/custom_icons/font_awesome_icons.dart';
 import 'package:polypeip/custom_widgets/CustomBackAppBar.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
+import 'package:polypeip/models/Contact.dart';
+import 'package:polypeip/models/Link.dart';
+import 'package:polypeip/models/SocialNetwork.dart';
+import 'package:polypeip/services/requests.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class InfoAnnuairePage extends StatefulWidget {
@@ -12,44 +16,29 @@ class InfoAnnuairePage extends StatefulWidget {
 class _InfoAnnuairePageState extends State<InfoAnnuairePage> {
   bool _isTapped = false;
   String _currentSettings = "";
+  bool loading = false;
 
-  List<Map<String, String>> staffMember = [
-    {
-      "_id": "az64ea4e6",
-      "name": "Yanick",
-      "email": "yanick@gmail.com",
-      "phone": "0604659846",
-    },
-    {
-      "_id": "az64ea4e6",
-      "name": "Henri",
-      "email": "henri@gmail.com",
-      "phone": "0649873249",
-    },
-  ];
+  List<Contact> contacts;
+  List<SocialNetwork> socialNetworks;
+  List<Link> links;
 
-  List<Map<String, String>> listMedias = [
-    {
-      "_id": "qdq6s4d5",
-      "media": "Facebook",
-      "page": "Polypeip",
-      "url": "https://www.facebook.com/",
-    },
-    {
-      "_id": "qdq6s4d5",
-      "media": "Discord",
-      "page": "ServerPeip",
-      "url": "https://discord.com/",
-    },
-  ];
+  Future setContacts() async {
+    if (contacts != null) return;
+    List<Contact> tmp = await getContacts();
+    setState(() => contacts = tmp);
+  }
 
-  List<Map<String, String>> listLinks = [
-    {
-      "_id": "4z6r46a",
-      "linkName": "Fichier Excel",
-      "url": "https://www.facebook.com/",
-    },
-  ];
+  Future setSocailNetworks() async {
+    if (socialNetworks != null) return;
+    List<SocialNetwork> tmp = await getSocialNetworks();
+    setState(() => socialNetworks = tmp);
+  }
+
+  Future setLinks() async {
+    if (links != null) return;
+    List<Link> tmp = await getLinks();
+    setState(() => links = tmp);
+  }
 
   Widget buildParamsContainer(height, width, textParams, last) {
     return GestureDetector(
@@ -127,47 +116,67 @@ class _InfoAnnuairePageState extends State<InfoAnnuairePage> {
   }
 
   Widget buildAnnuaire(height, width, page) {
-    if (page == "Réseaux sociaux") {
-      return ListView.builder(
-        shrinkWrap: true,
-        physics: ClampingScrollPhysics(),
-        itemCount: listMedias.length,
-        itemBuilder: (context, index) {
-          return singleAreaSetting(
-            height,
-            width,
-            listMedias[index]['media'],
-            false,
-            0.45,
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: <Widget>[
-                GestureDetector(
-                  child: CustomText(
-                    text: listMedias[index]['page'],
-                    fontColor: FontColor.darkGrey,
-                    fontSize: FontSize.md,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  onTap: () {
-                    launch(listMedias[index]['url']);
-                  },
+    setState(() => loading = true);
+
+    switch (page) {
+      case "Contact":
+        setContacts();
+        return ListView.builder(
+            shrinkWrap: true,
+            physics: ClampingScrollPhysics(),
+            itemCount: contacts == null ? 0 : contacts.length,
+            itemBuilder: (context, index) {
+              Contact contact = contacts[index];
+
+              return singleAreaSetting(
+                height,
+                width,
+                contact.name,
+                false,
+                0.45,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    GestureDetector(
+                      child: CustomText(
+                        text: 'Tel :' + contact.tel,
+                        fontColor: FontColor.darkGrey,
+                        fontSize: FontSize.md,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      onTap: () {
+                        launch('tel:<' + contact.tel + '>');
+                      },
+                    ),
+                    Padding(
+                        padding: EdgeInsets.symmetric(vertical: width * 0.01)),
+                    GestureDetector(
+                      child: CustomText(
+                        text: contact.email,
+                        fontColor: FontColor.darkGrey,
+                        fontSize: FontSize.md,
+                      ),
+                      onTap: () {
+                        launch('mailto:<' + contact.email + '>');
+                      },
+                    )
+                  ],
                 ),
-              ],
-            ),
-          );
-        },
-      );
-    } else if (page == "Contact") {
-      return ListView.builder(
+              );
+            });
+        break;
+      case "Réseaux sociaux":
+        setSocailNetworks();
+        return ListView.builder(
           shrinkWrap: true,
           physics: ClampingScrollPhysics(),
-          itemCount: staffMember.length,
+          itemCount: socialNetworks == null ? 0 : socialNetworks.length,
           itemBuilder: (context, index) {
+            SocialNetwork social = socialNetworks[index];
             return singleAreaSetting(
               height,
               width,
-              staffMember[index]['name'],
+              social.socialNetwork,
               false,
               0.45,
               Column(
@@ -175,56 +184,50 @@ class _InfoAnnuairePageState extends State<InfoAnnuairePage> {
                 children: <Widget>[
                   GestureDetector(
                     child: CustomText(
-                      text: 'Tel :' + staffMember[index]['phone'],
+                      text: social.value,
                       fontColor: FontColor.darkGrey,
                       fontSize: FontSize.md,
                       fontWeight: FontWeight.bold,
                     ),
                     onTap: () {
-                      launch('tel:<' + staffMember[index]['phone'] + '>');
+                      // launch(social.url);
                     },
                   ),
-                  Padding(
-                      padding: EdgeInsets.symmetric(vertical: width * 0.01)),
-                  GestureDetector(
-                    child: CustomText(
-                      text: staffMember[index]['email'],
-                      fontColor: FontColor.darkGrey,
-                      fontSize: FontSize.md,
-                    ),
-                    onTap: () {
-                      launch('mailto:<' + staffMember[index]['email'] + '>');
-                    },
-                  )
                 ],
               ),
             );
-          });
-    } else if (page == "Liens utiles") {
-      return ListView.builder(
-        shrinkWrap: true,
-        physics: ClampingScrollPhysics(),
-        itemCount: listLinks.length,
-        itemBuilder: (context, index) {
-          return singleAreaSetting(
-            height,
-            width,
-            listLinks[index]['linkName'],
-            false,
-            0.7,
-            GestureDetector(
-              child: Icon(
-                FontAwesome.folder_open,
-                size: height * 0.02,
-                color: CustomText.textColor(FontColor.blue),
+          },
+        );
+        break;
+      case "Liens utiles":
+        setLinks();
+        return ListView.builder(
+          shrinkWrap: true,
+          physics: ClampingScrollPhysics(),
+          itemCount: links != null ? links.length : 0,
+          itemBuilder: (context, index) {
+            Link link = links[index];
+            return singleAreaSetting(
+              height,
+              width,
+              link.name,
+              false,
+              0.7,
+              GestureDetector(
+                child: Icon(
+                  FontAwesome.folder_open,
+                  size: height * 0.02,
+                  color: CustomText.textColor(FontColor.blue),
+                ),
+                onTap: () => {},
               ),
-              onTap: () => {},
-            ),
-          );
-        },
-      );
+            );
+          },
+        );
+        break;
+      default:
+        return Container();
     }
-    return Container();
   }
 
   Widget buildTopContent(height, width) {

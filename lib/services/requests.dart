@@ -1,5 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:polypeip/models/Contact.dart';
+import 'package:polypeip/models/Event.dart';
+import 'package:polypeip/models/Goodie.dart';
+import 'package:polypeip/models/Message.dart';
 import 'package:polypeip/models/Post.dart';
+import 'package:polypeip/models/SocialNetwork.dart';
 import 'request.dart';
 
 // POSTS
@@ -15,7 +19,15 @@ Future<List<Post>> getPosts() async {
   return posts;
 }
 
-Future getPost() async {}
+Future<Post> getPost(String id) async {
+  Post post;
+
+  await request(RequestType.get, '/posts/' + id).then((res) {
+    post = Post.fromJson(res['data']['post'] as dynamic);
+  });
+
+  return post;
+}
 
 Future addPost() async {}
 
@@ -26,11 +38,27 @@ Future editPost() async {}
 Future removePost() async {}
 
 // EVENTS
-Future getNextEvents() async {}
+Future<List<Event>> getEvents() async {
+  List<Event> events;
 
-Future getPastEvents() async {}
+  await request(RequestType.get, '/event/').then((res) {
+    events = (res['data']['events'] as List<dynamic>)
+        .map((post) => Event.fromJson(post))
+        .toList();
+  });
 
-Future getEvent() async {}
+  return events;
+}
+
+Future<Event> getEvent(String id, bool isOld) async {
+  Event event;
+
+  await request(RequestType.get, '/event/' + id).then((res) {
+    event = Event.fromJson(res['data']['event'] as dynamic);
+  });
+
+  return event;
+}
 
 Future addEvent() async {}
 
@@ -43,22 +71,51 @@ Future rateEvent() async {}
 Future commentEvent() async {}
 
 // MESSAGES
-Future getMessages() async {}
+Future<List<Message>> getMessages() async {
+  List<Message> messages;
 
-Future getMessage() async {}
+  await request(RequestType.get, '/message/').then((res) {
+    messages = (res['data']['messages'] as List<dynamic>)
+        .map((post) => Message.fromJson(post))
+        .toList();
+  });
+
+  return messages;
+}
 
 Future sendMessage() async {}
 
 // INFOS
 /* annuary */
-Future getContacts() async {}
+Future getContacts() async {
+  List<Contact> contacts;
+
+  await request(RequestType.get, '/contact/').then((res) {
+    print(res);
+    contacts = (res['data']['contacts'] as List<dynamic>)
+        .map((post) => Contact.fromJson(post))
+        .toList();
+  });
+
+  return contacts;
+}
 
 Future editContact() async {}
 
 Future removeContact() async {}
 
 /* social network */
-Future getSocialNetworks() async {}
+Future getSocialNetworks() async {
+  List<SocialNetwork> socialNetworks;
+
+  await request(RequestType.get, '/social/').then((res) {
+    socialNetworks = (res['data']['socials'] as List<dynamic>)
+        .map((post) => SocialNetwork.fromJson(post))
+        .toList();
+  });
+
+  return socialNetworks;
+}
 
 Future editSocialNetworks() async {}
 
@@ -72,7 +129,17 @@ Future editLink() async {}
 Future removeLink() async {}
 
 /* goodies */
-Future getGoodies() async {}
+Future getGoodies() async {
+  List<Goodie> goodies;
+
+  await request(RequestType.get, '/goodie/').then((res) {
+    goodies = (res['data']['goodies'] as List<dynamic>)
+        .map((post) => Goodie.fromJson(post))
+        .toList();
+  });
+
+  return goodies;
+}
 
 Future addGoodie() async {}
 

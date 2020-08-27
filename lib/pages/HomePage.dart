@@ -1,12 +1,14 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:polypeip/custom_widgets/CustomAppBar.dart';
 import 'package:polypeip/custom_widgets/CustomBottomBar.dart';
 import 'package:polypeip/custom_widgets/CustomNews.dart';
 import 'package:polypeip/custom_widgets/CustomNewsAlt.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
+import 'package:polypeip/models/Post.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-
+import 'package:polypeip/services/requests.dart';
 import '../custom_widgets/CustomTopbar.dart';
 
 class HomePage extends StatefulWidget {
@@ -16,6 +18,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  List<Post> posts = [];
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -25,35 +28,13 @@ class _HomePageState extends State<HomePage> {
 
   final double topBarHeightPercent = 0.06;
 
-  List<Map<String, String>> posts = [
-    {
-      "_id": "16ea84d9az4az8",
-      "title": "Quais St Bernard - 18h42",
-      "date": "01/05/2020",
-      "description":
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas a congue odio, ut ultrices metus. Cras tempor magna id ante posuere, non egestas sapien laoreet. Fusce venenatis sed odio sed varius.",
-      "img":
-          "https://static.lexpress.fr/medias_11577/w_2000,h_1120,c_fill,g_center/v1502354725/paris-vu-du-ciel-des-images-epoustouflantes-filmees-par-un-drone_5927848.jpg",
-    },
-    {
-      "_id": "16ea84d9az4az8",
-      "title": "Quais St Bernard - 18h00",
-      "date": "01/05/2020",
-      "description":
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas a congue odio, ut ultrices metus. Cras tempor magna id ante posuere, non egestas sapien laoreet. Fusce venenatis sed odio sed varius.",
-      "img":
-          "https://static.lexpress.fr/medias_11577/w_2000,h_1120,c_fill,g_center/v1502354725/paris-vu-du-ciel-des-images-epoustouflantes-filmees-par-un-drone_5927848.jpg",
-    },
-    {
-      "_id": "16ea84d9az4az8",
-      "title": "Quais St Bernard - 18h00",
-      "date": "01/05/2020",
-      "description":
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas a congue odio, ut ultrices metus. Cras tempor magna id ante posuere, non egestas sapien laoreet. Fusce venenatis sed odio sed varius.",
-      "img":
-          "https://static.lexpress.fr/medias_11577/w_2000,h_1120,c_fill,g_center/v1502354725/paris-vu-du-ciel-des-images-epoustouflantes-filmees-par-un-drone_5927848.jpg",
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+    getPosts().then((value) {
+      setState(() => posts = value);
+    });
+  }
 
   Widget constructTopBar(heightScreen, widthScreen) {
     double topBarHeight = heightScreen * topBarHeightPercent;
@@ -153,11 +134,11 @@ class _HomePageState extends State<HomePage> {
                       child: CustomNews(
                           heightScreen: height,
                           widthScreen: width,
-                          newsId: posts[index]["_id"],
-                          newsTitle: posts[index]["title"],
-                          newsDate: posts[index]["date"],
-                          newsDescription: posts[index]["description"],
-                          newsImage: posts[index]["img"])));
+                          newsId: posts[index].id,
+                          newsTitle: posts[index].name,
+                          newsDate: posts[index].date,
+                          newsDescription: posts[index].content,
+                          newsImage: posts[index].img)));
             }),
         ListView.builder(
             itemCount: posts.length,
@@ -172,11 +153,11 @@ class _HomePageState extends State<HomePage> {
                       child: CustomNewsAlt(
                           heightScreen: height,
                           widthScreen: width,
-                          newsId: posts[index]["_id"],
-                          newsTitle: posts[index]["title"],
-                          newsDate: posts[index]["date"],
-                          newsDescription: posts[index]["description"],
-                          newsImage: posts[index]["img"])));
+                          newsId: posts[index].id,
+                          newsTitle: posts[index].name,
+                          newsDate: posts[index].date,
+                          newsDescription: posts[index].content,
+                          newsImage: posts[index].img)));
             })
       ],
     );
@@ -196,9 +177,10 @@ class _HomePageState extends State<HomePage> {
           key: _scaffoldKey,
           backgroundColor: Colors.white,
           appBar: CustomAppBar(
-              context: this.context,
-              heightScreen: _screenHeight,
-              widthScreen: _screenWidth),
+            context: this.context,
+            heightScreen: _screenHeight,
+            widthScreen: _screenWidth,
+          ),
           body: SmartRefresher(
             controller: _refreshController,
             enablePullDown: true,

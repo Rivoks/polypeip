@@ -15,6 +15,6 @@ class Message {
         id: message['_id'],
         subject: message['subject'],
         content: message['content'],
-        date: message['date'],
+        date: DateTime.parse(message['date']),
       );
 }

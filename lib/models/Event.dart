@@ -24,6 +24,6 @@ class Event {
         img: event['img'],
         totalRate: event['totalRate'],
         nbTotalRate: event['nbTotalRate'],
-        date: event['date'],
+        date: DateTime.parse(event['date']),
       );
 }

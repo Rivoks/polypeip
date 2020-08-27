@@ -3,9 +3,9 @@ class Post {
   final String name;
   final String content;
   final String img;
-  final double totalLikes;
-  final double nbTotalLikes;
-  final double nbTotalUnlikes;
+  final int totalLikes;
+  final int nbTotalLikes;
+  final int nbTotalUnlikes;
   final DateTime date;
 
   Post({
@@ -19,14 +19,16 @@ class Post {
     this.date,
   });
 
-  factory Post.fromJson(Map<String, dynamic> goodie) => Post(
-        id: goodie['_id'],
-        name: goodie['name'],
-        content: goodie['content'],
-        img: goodie['img'],
-        totalLikes: goodie['totalLikes'],
-        nbTotalLikes: goodie['nbTotalLikes'],
-        nbTotalUnlikes: goodie['nbTotalUnlikes'],
-        date: goodie['date'],
+  factory Post.fromJson(Map<String, dynamic> post) => Post(
+        id: post['_id'],
+        name: post['name'],
+        content: post['content'],
+        img: post['img'] != null
+            ? post['img']
+            : "https://static.lexpress.fr/medias_11577/w_2000,h_1120,c_fill,g_center/v1502354725/paris-vu-du-ciel-des-images-epoustouflantes-filmees-par-un-drone_5927848.jpg",
+        totalLikes: post['totalLikes'],
+        nbTotalLikes: post['nbTotalLikes'],
+        nbTotalUnlikes: post['nbTotalUnlikes'],
+        date: DateTime.parse(post['date']),
       );
 }

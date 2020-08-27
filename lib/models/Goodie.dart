@@ -19,8 +19,10 @@ class Goodie {
         id: goodie['_id'],
         name: goodie['name'],
         description: goodie['description'],
-        img: goodie['img'],
+        img: goodie['img'] != null
+            ? goodie['img']
+            : "https://static.lexpress.fr/medias_11577/w_2000,h_1120,c_fill,g_center/v1502354725/paris-vu-du-ciel-des-images-epoustouflantes-filmees-par-un-drone_5927848.jpg",
         price: goodie['price'],
-        date: goodie['date'],
+        date: DateTime.parse(goodie['date']),
       );
 }

@@ -248,22 +248,23 @@ class MyApp extends StatelessWidget {
               break;
             case '/postMessage':
               return PageTransition(
-                  child: PostMessagePage(
-                    postId: getParameters(settings.arguments, 'postMessageId'),
-                  ),
-                  type: PageTransitionType.downToUp);
+                child: PostMessagePage(
+                  message: getParameters(settings.arguments, 'message'),
+                ),
+                type: PageTransitionType.downToUp,
+              );
               break;
             case '/postEvent':
               return PageTransition(
                   child: PostEventPage(
-                    postId: getParameters(settings.arguments, 'postEventId'),
+                    eventId: getParameters(settings.arguments, 'eventId'),
                   ),
                   type: PageTransitionType.downToUp);
               break;
             case '/postEventOld':
               return PageTransition(
                   child: PostEventPageOld(
-                    postId: getParameters(settings.arguments, 'postEventId'),
+                    eventId: getParameters(settings.arguments, 'eventId'),
                   ),
                   type: PageTransitionType.downToUp);
               break;

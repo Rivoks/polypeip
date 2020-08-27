@@ -4,6 +4,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
+import 'package:polypeip/models/Post.dart';
+import 'package:polypeip/services/requests.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../custom_widgets/CustomBackAppBar.dart';
@@ -21,27 +23,24 @@ class _PostPageState extends State<PostPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isLiked = false;
   bool _isDisliked = false;
+  Post post;
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
+
+  @override
+  void initState() {
+    super.initState();
+    getPost(widget.postId).then((value) {
+      setState(() => post = value);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     double _screenHeight = MediaQuery.of(context).size.height;
     double _screenWidth = MediaQuery.of(context).size.width;
     double _imageHeight = _screenHeight * 0.25;
-
-    List<Map<String, String>> posts = [
-      {
-        "_id": "16ea84d9az4az8",
-        "title": "Quais St Bernard - 18h00",
-        "date": "01/05/2020",
-        "description":
-            " Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent nec lacus eros. Donec turpis eros, convallis in rhoncus id, facilisis at magna.\n\n Nunc mauris tellus, aliquet vel libero a, pharetra blandit justo. Aenean sit amet dignissim mi, et venenatis lorem. Morbi interdum purus tellus, eu lacinia nibh consequat fermentum. Donec quis aliquet mauris.\n\n Donec a tortor eget turpis tempor aliquet in at tellus. In hac habitasse platea dictumst. Mauris condimentum sapien id nunc tincidunt, at sollicitudin nibh fermentum. Curabitur pretium bibendum diam, aliquam feugiat velit euismod vitae. Donec vestibulum eget nibh non aliquam.\n\n Donec vestibulum nisi sit amet libero volutpat, eu vehicula orci commodo. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tellus nibh, iaculis sit amet hendrerit sed, viverra ac nulla. Donec fringilla sapien nisl, eu fringilla massa consequat vel.\n\n Pellentesque ac malesuada ligula, vel viverra purus. Integer sed odio purus. Duis non congue erat, mollis eleifend elit.\n Phasellus porttitor pharetra dui, nec varius sapien ultrices non. Sed fermentum laoreet est, sit amet bibendum sapien rhoncus sit amet. Vivamus nulla neque, faucibus id suscipit sit amet, pellentesque vitae nisl.\n\n Sed tempus, magna vestibulum tincidunt mattis, felis dui hendrerit felis, sed ornare sem arcu non mi. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque luctus molestie gravida.",
-        "img":
-            "https://static.lexpress.fr/medias_11577/w_2000,h_1120,c_fill,g_center/v1502354725/paris-vu-du-ciel-des-images-epoustouflantes-filmees-par-un-drone_5927848.jpg",
-      },
-    ];
 
     return Container(
       decoration: BoxDecoration(
@@ -69,7 +68,7 @@ class _PostPageState extends State<PostPage> {
                 _refreshController.refreshCompleted();
               },
               child: ListView.builder(
-                  itemCount: posts.length,
+                  itemCount: 1,
                   itemBuilder: (context, index) {
                     return Container(
                       width: _screenWidth,
@@ -82,7 +81,7 @@ class _PostPageState extends State<PostPage> {
                               alignment: AlignmentDirectional.bottomEnd,
                               children: <Widget>[
                                 CachedNetworkImage(
-                                  imageUrl: posts[index]["img"],
+                                  imageUrl: post.img,
                                   height: _imageHeight,
                                   width: _screenWidth,
                                   fit: BoxFit.fill,
@@ -154,7 +153,7 @@ class _PostPageState extends State<PostPage> {
                                 right: _screenWidth * 0.08,
                                 left: _screenWidth * 0.08),
                             child: CustomText(
-                              text: posts[index]["title"],
+                              text: post.name,
                               fontColor: FontColor.black,
                               fontSize: FontSize.lg,
                               fontWeight: FontWeight.bold,
@@ -169,7 +168,7 @@ class _PostPageState extends State<PostPage> {
                                   right: _screenWidth * 0.08,
                                   left: _screenWidth * 0.08),
                               child: CustomText(
-                                text: posts[index]["date"],
+                                text: post.date.toIso8601String(),
                                 fontColor: FontColor.darkGrey,
                                 fontSize: FontSize.sm,
                                 fontWeight: FontWeight.normal,
@@ -187,7 +186,7 @@ class _PostPageState extends State<PostPage> {
                                   right: _screenWidth * 0.08,
                                   left: _screenWidth * 0.08),
                               child: CustomText(
-                                text: posts[index]["description"],
+                                text: post.content,
                                 fontColor: FontColor.black,
                                 fontSize: FontSize.md,
                                 fontWeight: FontWeight.normal,

@@ -8,7 +8,7 @@ class CustomNews extends StatefulWidget {
   final String newsId;
   final String newsTitle;
   final String newsDescription;
-  final String newsDate;
+  final DateTime newsDate;
   final String newsImage;
 
   final imageHeight = 0.3;
@@ -119,7 +119,7 @@ class _CustomNews extends State<CustomNews> {
                   padding: EdgeInsetsDirectional.only(
                       top: widget.heightScreen * 0.02)),
               CustomText(
-                text: widget.newsDate,
+                text: widget.newsDate.toIso8601String(),
                 fontColor: FontColor.darkGrey,
                 fontSize: FontSize.xs,
               ),

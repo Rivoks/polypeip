@@ -4,6 +4,8 @@ import 'package:photo_view/photo_view.dart';
 import 'package:polypeip/custom_icons/font_awesome_icons.dart';
 import 'package:polypeip/custom_widgets/CustomBackAppBar.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
+import 'package:polypeip/models/Goodie.dart';
+import 'package:polypeip/services/requests.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class InfoGoodiesPage extends StatefulWidget {
@@ -11,44 +13,31 @@ class InfoGoodiesPage extends StatefulWidget {
   _InfoGoodiesPageState createState() => _InfoGoodiesPageState();
 }
 
-RefreshController _refreshController = RefreshController(initialRefresh: false);
-
-List<Map<String, String>> goodies = [
-  {
-    "_id": "ez64rze6r",
-    "title": "Goodies 1",
-    "description": "La meilleure chose à s'offrir",
-    "price": "19.99",
-    "imgUrl":
-        "https://www.lemoniteur.fr/mediatheque/4/3/6/001156634_620x393_c.jpg",
-  },
-  {
-    "_id": "ez64rze6r",
-    "title": "Goodies 2",
-    "description": "Pour rester frais h24",
-    "price": "9.99",
-    "imgUrl":
-        "https://www.lamodeenimages.com/sites/default/files-lmi/images/push/gucci-defile-cruise-2019-arles-la-mode-en-images-intro.jpg",
-  },
-  {
-    "_id": "ez64rze6r",
-    "title": "Goodies 3",
-    "description": "Histoire de kiffer un peu",
-    "price": "14.99",
-    "imgUrl":
-        "https://www.lemoniteur.fr/mediatheque/4/3/6/001156634_620x393_c.jpg",
-  },
-];
-
 Color blue = CustomText.textColor(FontColor.blue);
 
 class _InfoGoodiesPageState extends State<InfoGoodiesPage> {
+  List<Goodie> goodies;
+
+  @override
+  void initState() {
+    super.initState();
+
+    getGoodies().then((res) {
+      setState(() => goodies = res);
+    });
+  }
+
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+
   Widget buildGoodiesCard(height, width) {
     return ListView.builder(
       shrinkWrap: true,
       physics: ClampingScrollPhysics(),
-      itemCount: goodies.length,
+      itemCount: goodies != null ? goodies.length : 0,
       itemBuilder: (container, index) {
+        Goodie goodie = goodies[index];
+
         return Container(
           padding: EdgeInsets.symmetric(horizontal: width * 0.08),
           child: Column(
@@ -63,14 +52,14 @@ class _InfoGoodiesPageState extends State<InfoGoodiesPage> {
                       context,
                       MaterialPageRoute(
                         builder: (_) {
-                          return DetailScreen();
+                          return DetailScreen(img: goodie.img);
                         },
                       ),
                     );
                   },
                   child: CachedNetworkImage(
                     fit: BoxFit.cover,
-                    imageUrl: goodies[index]['imgUrl'],
+                    imageUrl: goodie.img,
                     placeholder: (context, url) {
                       return Container(
                           alignment: Alignment.center,
@@ -117,14 +106,14 @@ class _InfoGoodiesPageState extends State<InfoGoodiesPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     CustomText(
-                      text: goodies[index]['title'],
+                      text: goodie.name,
                       fontColor: FontColor.blue,
                       fontSize: FontSize.xl,
                       fontWeight: FontWeight.bold,
                     ),
                     Padding(padding: EdgeInsets.only(bottom: height * 0.007)),
                     CustomText(
-                      text: goodies[index]['description'],
+                      text: goodie.description,
                       fontColor: FontColor.darkGrey,
                       fontSize: FontSize.sm,
                       fontWeight: FontWeight.w400,
@@ -139,7 +128,7 @@ class _InfoGoodiesPageState extends State<InfoGoodiesPage> {
                       ),
                     ),
                     CustomText(
-                      text: 'Prix : ' + goodies[index]['price'] + '€',
+                      text: 'Prix : ' + goodie.price.toString() + '€',
                       fontColor: FontColor.darkGrey,
                       fontSize: FontSize.lg,
                       fontWeight: FontWeight.bold,
@@ -235,6 +224,10 @@ class _InfoGoodiesPageState extends State<InfoGoodiesPage> {
 }
 
 class DetailScreen extends StatelessWidget {
+  final String img;
+
+  DetailScreen({@required this.img});
+
   @override
   Widget build(BuildContext context) {
     double _screenHeight = MediaQuery.of(context).size.height;
@@ -253,7 +246,7 @@ class DetailScreen extends StatelessWidget {
             child: PhotoView(
               minScale: 0.55,
               maxScale: 1.2,
-              imageProvider: NetworkImage(goodies[0]['imgUrl']),
+              imageProvider: NetworkImage(img),
               loadingBuilder: (context, event) => Center(
                 child: Container(
                   width: 20.0,
