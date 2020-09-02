@@ -217,7 +217,7 @@ class _ListEventsPageState extends State<ListEventsPage> {
                       : Container(),
                   Padding(padding: EdgeInsets.only(top: _screenHeight * 0.03)),
                   buildEditForm(_screenHeight, _screenWidth, index),
-                  (index == events.length - 1)
+                  (index == (events != null ? events.length - 1 : 0))
                       ? Padding(
                           padding: EdgeInsets.only(top: _screenHeight * 0.05))
                       : Container(),

@@ -36,6 +36,21 @@ class _CustomNews extends State<CustomNews> {
     post = widget.post;
   }
 
+  void react(String action) {
+    int status = action == "like" ? 1 : -1;
+    reactPost(
+      post.id,
+      post.likeStatus == status ? "cancel-like" : action,
+      context: context,
+    ).then((_) {
+      setState(() => post.likeStatus == status ? 0 : status);
+      getPost(
+        post.id,
+        context: context,
+      ).then((value) => setState(() => post = value != null ? value : post));
+    });
+  }
+
   Widget newsPoster() {
     double imageHeight = widget.imageHeight * widget.heightScreen;
     double imageWidth = widget.imageWidth * widget.widthScreen;
@@ -71,19 +86,7 @@ class _CustomNews extends State<CustomNews> {
           type: PageTransitionType.downToUp,
         ),
       ),
-      onDoubleTap: () {
-        reactPost(post.id, post.likeStatus == 1 ? "cancel-like" : "like",
-                context: context)
-            .then(
-          (value) {
-            setState(() {
-              post.likeStatus = post.likeStatus == 1 ? 0 : 1;
-            });
-            getPost(post.id, context: context)
-                .then((value) => setState(() => post = value));
-          },
-        );
-      },
+      onDoubleTap: () => react("like"),
     );
   }
 
@@ -157,47 +160,33 @@ class _CustomNews extends State<CustomNews> {
                       key: _bottomInfoKey,
                       children: <Widget>[
                         GestureDetector(
-                          child: Container(
-                            child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: <Widget>[
-                                  CustomText(
-                                    text: post.totalLikes.toString(),
-                                    fontColor: post.likeStatus == 1
-                                        ? FontColor.blue
-                                        : FontColor.darkGrey,
-                                    fontSize: FontSize.md,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal:
-                                              widget.widthScreen * 0.01)),
-                                  Icon(
-                                    Icons.thumb_up,
-                                    size: CustomText.textSize(FontSize.lg),
-                                    color: post.likeStatus == 1
-                                        ? CustomText.textColor(FontColor.blue)
-                                        : CustomText.textColor(
-                                            FontColor.darkGrey),
-                                  )
-                                ]),
-                          ),
-                          onTap: () {
-                            reactPost(
-                              post.id,
-                              post.likeStatus == 1 ? "cancel-like" : "like",
-                              context: context,
-                            ).then((_) {
-                              setState(() => post.likeStatus =
-                                  post.likeStatus == 1 ? 0 : 1);
-                              getPost(
-                                post.id,
-                                context: context,
-                              ).then((value) => setState(() => post = value));
-                            });
-                          },
-                        ),
+                            child: Container(
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: <Widget>[
+                                    CustomText(
+                                      text: post.totalLikes.toString(),
+                                      fontColor: post.likeStatus == 1
+                                          ? FontColor.blue
+                                          : FontColor.darkGrey,
+                                      fontSize: FontSize.md,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal:
+                                                widget.widthScreen * 0.01)),
+                                    Icon(
+                                      Icons.thumb_up,
+                                      size: CustomText.textSize(FontSize.lg),
+                                      color: post.likeStatus == 1
+                                          ? CustomText.textColor(FontColor.blue)
+                                          : CustomText.textColor(
+                                              FontColor.darkGrey),
+                                    )
+                                  ]),
+                            ),
+                            onTap: () => react("l=ike")),
                         Padding(
                             padding: EdgeInsets.symmetric(
                                 horizontal: widget.widthScreen * 0.03)),
@@ -229,24 +218,7 @@ class _CustomNews extends State<CustomNews> {
                               )
                             ],
                           ),
-                          onTap: () {
-                            reactPost(
-                              post.id,
-                              post.likeStatus == -1 ? "cancel-like" : "dislike",
-                              context: context,
-                            ).then(
-                              (_) {
-                                setState(() {
-                                  post.likeStatus =
-                                      post.likeStatus == -1 ? 0 : -1;
-                                });
-                                getPost(
-                                  post.id,
-                                  context: context,
-                                ).then((value) => setState(() => post = value));
-                              },
-                            );
-                          },
+                          onTap: () => react("dislike"),
                         )
                       ]))
             ],

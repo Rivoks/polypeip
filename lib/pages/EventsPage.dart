@@ -53,6 +53,7 @@ class _EventsPageState extends State<EventsPage> {
   void initState() {
     super.initState();
     getEvents(context: context).then((events) {
+      if (events == null) return;
       events.forEach((event) {
         setState(() {
           if (!event.date.isBefore(DateTime.now()))

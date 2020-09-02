@@ -187,7 +187,7 @@ class _ListReseauxPageState extends State<ListReseauxPage> {
           child: ListView.builder(
             shrinkWrap: true,
             physics: ClampingScrollPhysics(),
-            itemCount: socialNetworks.length,
+            itemCount: socialNetworks == null ? 0 : socialNetworks.length,
             itemBuilder: (context, index) {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -206,7 +206,10 @@ class _ListReseauxPageState extends State<ListReseauxPage> {
                       : Container(),
                   Padding(padding: EdgeInsets.only(top: _screenHeight * 0.03)),
                   buildEditForm(_screenHeight, _screenWidth, index),
-                  (index == socialNetworks.length - 1)
+                  (index ==
+                          (socialNetworks != null
+                              ? socialNetworks.length - 1
+                              : 0))
                       ? Padding(
                           padding: EdgeInsets.only(top: _screenHeight * 0.05))
                       : Container(),

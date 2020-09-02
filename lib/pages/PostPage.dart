@@ -33,6 +33,25 @@ class _PostPageState extends State<PostPage> {
     post = widget.post;
   }
 
+  void react(String action) {
+    int status = action == "like" ? 1 : -1;
+    reactPost(
+      post.id,
+      post.likeStatus == status ? "cancel-like" : action,
+      context: context,
+    ).then((_) {
+      setState(() => post.likeStatus == status ? 0 : status);
+      getPost(
+        post.id,
+        context: context,
+      ).then((value) {
+        if (value == null) return;
+        widget.setPost(value);
+        setState(() => post = value);
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double _screenHeight = MediaQuery.of(context).size.height;
@@ -221,24 +240,7 @@ class _PostPageState extends State<PostPage> {
                 labelStyle: TextStyle(
                     fontSize: _screenHeight * 0.02,
                     fontWeight: FontWeight.bold),
-                onTap: () => reactPost(
-                  post.id,
-                  "dislike",
-                  context: context,
-                ).then(
-                  (_) {
-                    setState(() {
-                      post.likeStatus = -1;
-                    });
-                    getPost(
-                      post.id,
-                      context: context,
-                    ).then((value) {
-                      widget.setPost(value);
-                      setState(() => post = value);
-                    });
-                  },
-                ),
+                onTap: () => react("dislike"),
               ),
               SpeedDialChild(
                 child: Icon(Icons.thumb_up),
@@ -247,24 +249,7 @@ class _PostPageState extends State<PostPage> {
                 labelStyle: TextStyle(
                     fontSize: _screenHeight * 0.02,
                     fontWeight: FontWeight.bold),
-                onTap: () => reactPost(
-                  post.id,
-                  "like",
-                  context: context,
-                ).then(
-                  (_) {
-                    setState(() {
-                      post.likeStatus = 1;
-                    });
-                    getPost(
-                      post.id,
-                      context: context,
-                    ).then((value) {
-                      widget.setPost(value);
-                      setState(() => post = value);
-                    });
-                  },
-                ),
+                onTap: () => react("like"),
               ),
             ],
           ),

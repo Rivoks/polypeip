@@ -17,7 +17,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  List<Post> posts = [];
+  List<Post> posts;
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -120,7 +120,7 @@ class _HomePageState extends State<HomePage> {
       ),
       items: [
         ListView.builder(
-            itemCount: posts.length,
+            itemCount: posts == null ? 0 : posts.length,
             itemBuilder: (context, index) {
               return Container(
                 margin: index != 0 ? null : EdgeInsets.only(top: height * 0.03),
@@ -138,7 +138,7 @@ class _HomePageState extends State<HomePage> {
               );
             }),
         ListView.builder(
-            itemCount: posts.length,
+            itemCount: posts == null ? 0 : posts.length,
             itemBuilder: (context, index) {
               return Container(
                 margin: index != 0 ? null : EdgeInsets.only(top: height * 0.03),

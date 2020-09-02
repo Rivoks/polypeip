@@ -16,7 +16,7 @@ class MessagePage extends StatefulWidget {
 class _MessagePageState extends State<MessagePage> {
   double _screenHeight;
   double _screenWidth;
-  List<Message> messages = [];
+  List<Message> messages;
 
   @override
   void initState() {
@@ -145,7 +145,7 @@ class _MessagePageState extends State<MessagePage> {
               print("load");
             },
             child: ListView.builder(
-                itemCount: messages.length,
+                itemCount: messages == null ? 0 : messages.length,
                 itemBuilder: (context, index) {
                   return Column(
                     children: <Widget>[

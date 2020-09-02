@@ -84,137 +84,144 @@ class _PostEventPageState extends State<PostEventPage> {
               await Future.delayed(Duration(milliseconds: 1000));
               _refreshController.refreshCompleted();
             },
-            child: ListView.builder(
-              itemCount: event != null ? 1 : 0,
-              itemBuilder: (context, index) {
-                return Column(
-                  children: <Widget>[
-                    Container(
-                      color: Colors.white,
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: _screenWidth * 0.05,
-                          vertical: _screenHeight * 0.05,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            CustomText(
-                              text: event.name,
-                              fontColor: FontColor.black,
-                              fontSize: FontSize.xl,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            Padding(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: _screenHeight * 0.01,
-                                ),
-                                child: CustomText(
-                                  text: event.date.toIso8601String(),
-                                  fontColor: FontColor.darkGrey,
-                                  fontSize: FontSize.sm,
-                                )),
-                            Container(
-                              height: 1,
-                              width: _screenWidth,
-                              color: Colors.grey[350],
-                            ),
-                            Padding(
+            child: event == null
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : ListView.builder(
+                    itemCount: event != null ? 1 : 0,
+                    itemBuilder: (context, index) {
+                      return Column(
+                        children: <Widget>[
+                          Container(
+                            color: Colors.white,
+                            child: Container(
                               padding: EdgeInsets.symmetric(
-                                vertical: _screenWidth * 0.07,
+                                horizontal: _screenWidth * 0.05,
+                                vertical: _screenHeight * 0.05,
                               ),
-                              child: CustomText(
-                                text: event.description,
-                                fontColor: FontColor.black,
-                                fontSize: FontSize.md,
-                                fontWeight: FontWeight.w400,
-                                maxLines: pow(10, 10),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: _screenHeight * 0.07),
-                              child: Container(
-                                height: 1,
-                                width: _screenWidth,
-                                color: CustomText.textColor(FontColor.blue),
-                              ),
-                            ),
-                            Container(
-                              alignment: Alignment.center,
-                              width: _screenWidth,
-                              margin:
-                                  EdgeInsets.only(bottom: _screenHeight * 0.03),
-                              padding: EdgeInsets.symmetric(
-                                vertical: _screenHeight * 0.01,
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50),
-                                color: CustomText.textColor(FontColor.blue),
-                              ),
-                              child: CustomText(
-                                text: "Liste des participants",
-                                fontColor: FontColor.white,
-                                fontSize: FontSize.lg,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            ListView.builder(
-                              shrinkWrap: true,
-                              physics: ClampingScrollPhysics(),
-                              itemCount: student.length,
-                              itemBuilder: (context, index) {
-                                return Column(
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                        bottom: _screenHeight * 0.03,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  CustomText(
+                                    text: event.name,
+                                    fontColor: FontColor.black,
+                                    fontSize: FontSize.xl,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: _screenHeight * 0.01,
                                       ),
+                                      child: CustomText(
+                                        text: event.date.toIso8601String(),
+                                        fontColor: FontColor.darkGrey,
+                                        fontSize: FontSize.sm,
+                                      )),
+                                  Container(
+                                    height: 1,
+                                    width: _screenWidth,
+                                    color: Colors.grey[350],
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: _screenWidth * 0.07,
                                     ),
-                                    Row(
-                                      children: <Widget>[
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              right: _screenHeight * 0.015),
-                                          child: Icon(
-                                            Icons.check,
-                                            color: Colors.black,
-                                            size: _screenHeight * 0.03,
-                                          ),
-                                        ),
-                                        CustomText(
-                                          text: student[index]['surname'],
-                                          fontColor: FontColor.black,
-                                          fontSize: FontSize.md,
-                                          fontWeight: FontWeight.bold,
-                                          uppercase: true,
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                            right: _screenHeight * 0.006,
-                                          ),
-                                        ),
-                                        CustomText(
-                                          text: student[index]['name'],
-                                          fontColor: FontColor.black,
-                                          fontSize: FontSize.md,
-                                          fontWeight: FontWeight.bold,
-                                          uppercase: false,
-                                        ),
-                                      ],
+                                    child: CustomText(
+                                      text: event.description,
+                                      fontColor: FontColor.black,
+                                      fontSize: FontSize.md,
+                                      fontWeight: FontWeight.w400,
+                                      maxLines: pow(10, 10),
                                     ),
-                                  ],
-                                );
-                              },
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: _screenHeight * 0.07),
+                                    child: Container(
+                                      height: 1,
+                                      width: _screenWidth,
+                                      color:
+                                          CustomText.textColor(FontColor.blue),
+                                    ),
+                                  ),
+                                  Container(
+                                    alignment: Alignment.center,
+                                    width: _screenWidth,
+                                    margin: EdgeInsets.only(
+                                        bottom: _screenHeight * 0.03),
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: _screenHeight * 0.01,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(50),
+                                      color:
+                                          CustomText.textColor(FontColor.blue),
+                                    ),
+                                    child: CustomText(
+                                      text: "Liste des participants",
+                                      fontColor: FontColor.white,
+                                      fontSize: FontSize.lg,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: ClampingScrollPhysics(),
+                                    itemCount: student.length,
+                                    itemBuilder: (context, index) {
+                                      return Column(
+                                        children: <Widget>[
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                              bottom: _screenHeight * 0.03,
+                                            ),
+                                          ),
+                                          Row(
+                                            children: <Widget>[
+                                              Padding(
+                                                padding: EdgeInsets.only(
+                                                    right:
+                                                        _screenHeight * 0.015),
+                                                child: Icon(
+                                                  Icons.check,
+                                                  color: Colors.black,
+                                                  size: _screenHeight * 0.03,
+                                                ),
+                                              ),
+                                              CustomText(
+                                                text: student[index]['surname'],
+                                                fontColor: FontColor.black,
+                                                fontSize: FontSize.md,
+                                                fontWeight: FontWeight.bold,
+                                                uppercase: true,
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.only(
+                                                  right: _screenHeight * 0.006,
+                                                ),
+                                              ),
+                                              CustomText(
+                                                text: student[index]['name'],
+                                                fontColor: FontColor.black,
+                                                fontSize: FontSize.md,
+                                                fontWeight: FontWeight.bold,
+                                                uppercase: false,
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
-                );
-              },
-            ),
+                          )
+                        ],
+                      );
+                    },
+                  ),
           ),
           floatingActionButton: SpeedDial(
             marginRight: _screenWidth * 0.05,

@@ -235,7 +235,7 @@ class _ActivitesPageState extends State<ActivitesPage> {
                       : Container(),
                   Padding(padding: EdgeInsets.only(top: _screenHeight * 0.03)),
                   buildEditForm(_screenHeight, _screenWidth, index),
-                  (index == posts.length - 1)
+                  (index == (posts != null ? posts.length - 1 : 0))
                       ? Padding(
                           padding: EdgeInsets.only(top: _screenHeight * 0.05))
                       : Container(),
