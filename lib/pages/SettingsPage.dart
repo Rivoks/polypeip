@@ -226,23 +226,6 @@ class _SettingsPageState extends State<SettingsPage> {
           singleAreaSetting(
             height,
             width,
-            "Liens utiles",
-            false,
-            0.7,
-            GestureDetector(
-              child: Icon(
-                Icons.edit,
-                color: CustomText.textColor(FontColor.blue),
-                size: width * 0.055,
-              ),
-              onTap: () {
-                Navigator.pushNamed(context, "/edit/links");
-              },
-            ),
-          ),
-          singleAreaSetting(
-            height,
-            width,
             "Plans & EDT",
             false,
             0.7,
@@ -257,23 +240,23 @@ class _SettingsPageState extends State<SettingsPage> {
               },
             ),
           ),
-          singleAreaSetting(
-            height,
-            width,
-            "Goodies",
-            true,
-            0.7,
-            GestureDetector(
-              child: Icon(
-                Icons.edit,
-                color: CustomText.textColor(FontColor.blue),
-                size: width * 0.055,
-              ),
-              onTap: () {
-                Navigator.pushNamed(context, "/edit/goodies");
-              },
-            ),
-          ),
+          // singleAreaSetting(
+          //   height,
+          //   width,
+          //   "Goodies",
+          //   true,
+          //   0.7,
+          //   GestureDetector(
+          //     child: Icon(
+          //       Icons.edit,
+          //       color: CustomText.textColor(FontColor.blue),
+          //       size: width * 0.055,
+          //     ),
+          //     onTap: () {
+          //       Navigator.pushNamed(context, "/edit/goodies");
+          //     },
+          //   ),
+          // ),
           singleAreaSetting(
             height,
             width,

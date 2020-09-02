@@ -3,12 +3,14 @@ import 'package:polypeip/custom_icons/font_awesome_icons.dart';
 import 'package:polypeip/custom_widgets/CustomBackAppBar.dart';
 import 'package:polypeip/custom_widgets/CustomRoundedButton.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
+import 'package:polypeip/services/requests.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:polypeip/models/SocialNetwork.dart';
 
 class ReseauxEditPage extends StatefulWidget {
-  ReseauxEditPage({@required this.reseauxId});
+  final SocialNetwork socialNetwork;
 
-  final String reseauxId;
+  ReseauxEditPage({@required this.socialNetwork});
 
   @override
   _ReseauxEditPageState createState() => _ReseauxEditPageState();
@@ -18,14 +20,25 @@ class _ReseauxEditPageState extends State<ReseauxEditPage> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
+  TextEditingController socialNetworkTFC = TextEditingController();
+  TextEditingController usernameTFC = TextEditingController();
+  TextEditingController urlTFC = TextEditingController();
+
   double _screenHeight;
   double _screenWidth;
-
   double spaceInput = 0.1;
 
   Color blue = CustomText.textColor(FontColor.blue);
-
   Color adminColor = Color(0xFF7f8fa6);
+
+  @override
+  void initState() {
+    super.initState();
+
+    socialNetworkTFC.text = widget.socialNetwork.socialNetwork;
+    usernameTFC.text = widget.socialNetwork.username;
+    urlTFC.text = widget.socialNetwork.url;
+  }
 
   Widget buildTopContent() {
     return Container(
@@ -82,7 +95,14 @@ class _ReseauxEditPageState extends State<ReseauxEditPage> {
         fontWeight: FontWeight.bold,
         backgroundColor: blue,
         borderColor: blue,
-        onPressed: () => print('submit'),
+        onPressed: () => editSocialNetworks(
+          widget.socialNetwork.id,
+          socialNetworkTFC.text,
+          usernameTFC.text,
+          urlTFC.text,
+        ).then(
+          (value) => Navigator.pop(context),
+        ),
       ),
     );
   }
@@ -94,6 +114,7 @@ class _ReseauxEditPageState extends State<ReseauxEditPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           TextField(
+            controller: socialNetworkTFC,
             decoration: InputDecoration(
               hintText: "Titre",
               hintStyle: TextStyle(
@@ -104,6 +125,7 @@ class _ReseauxEditPageState extends State<ReseauxEditPage> {
           ),
           Padding(padding: EdgeInsets.only(bottom: _screenHeight * 0.02)),
           TextField(
+            controller: usernameTFC,
             decoration: InputDecoration(
               hintText: "Nom de compte",
               hintStyle: TextStyle(
@@ -114,6 +136,7 @@ class _ReseauxEditPageState extends State<ReseauxEditPage> {
           ),
           Padding(padding: EdgeInsets.only(bottom: _screenHeight * 0.02)),
           TextField(
+            controller: urlTFC,
             decoration: InputDecoration(
               hintText: "URL du lien",
               hintStyle: TextStyle(

@@ -11,9 +11,10 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../custom_widgets/CustomBackAppBar.dart';
 
 class PostPage extends StatefulWidget {
-  PostPage({@required this.postId});
+  PostPage({@required this.post, this.setPost});
 
-  final String postId;
+  final Post post;
+  final Function setPost;
 
   @override
   _PostPageState createState() => _PostPageState();
@@ -21,8 +22,6 @@ class PostPage extends StatefulWidget {
 
 class _PostPageState extends State<PostPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  bool _isLiked = false;
-  bool _isDisliked = false;
   Post post;
 
   RefreshController _refreshController =
@@ -31,9 +30,7 @@ class _PostPageState extends State<PostPage> {
   @override
   void initState() {
     super.initState();
-    getPost(widget.postId).then((value) {
-      setState(() => post = value);
-    });
+    post = widget.post;
   }
 
   @override
@@ -107,8 +104,8 @@ class _PostPageState extends State<PostPage> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       CustomText(
-                                        text: "76",
-                                        fontColor: _isLiked
+                                        text: post.totalLikes.toString(),
+                                        fontColor: post.likeStatus == 1
                                             ? FontColor.yellow
                                             : FontColor.white,
                                         fontSize: FontSize.md,
@@ -119,7 +116,7 @@ class _PostPageState extends State<PostPage> {
                                               right: _screenWidth * 0.005)),
                                       Icon(Icons.thumb_up,
                                           size: _screenHeight * 0.025,
-                                          color: _isLiked
+                                          color: post.likeStatus == 1
                                               ? CustomText.textColor(
                                                   FontColor.yellow)
                                               : Colors.white),
@@ -127,8 +124,10 @@ class _PostPageState extends State<PostPage> {
                                           padding: EdgeInsets.symmetric(
                                               horizontal: _screenWidth * 0.03)),
                                       CustomText(
-                                        text: "18",
-                                        fontColor: _isDisliked
+                                        text: post.nbTotalDislikes == 0
+                                            ? "0"
+                                            : post.nbTotalDislikes.toString(),
+                                        fontColor: post.likeStatus == -1
                                             ? FontColor.yellow
                                             : FontColor.white,
                                         fontSize: FontSize.md,
@@ -139,7 +138,7 @@ class _PostPageState extends State<PostPage> {
                                               right: _screenWidth * 0.005)),
                                       Icon(Icons.thumb_down,
                                           size: _screenHeight * 0.025,
-                                          color: _isDisliked
+                                          color: post.likeStatus == -1
                                               ? CustomText.textColor(
                                                   FontColor.yellow)
                                               : Colors.white)
@@ -222,34 +221,37 @@ class _PostPageState extends State<PostPage> {
                 labelStyle: TextStyle(
                     fontSize: _screenHeight * 0.02,
                     fontWeight: FontWeight.bold),
-                onTap: () => {
-                  setState(() {
-                    if (_isDisliked) {
-                      _isDisliked = false;
-                    } else {
-                      _isDisliked = true;
-                      _isLiked = false;
-                    }
-                  })
-                },
+                onTap: () => reactPost(post.id, "dislike").then(
+                  (_) {
+                    setState(() {
+                      post.likeStatus = -1;
+                    });
+                    getPost(post.id).then((value) {
+                      widget.setPost(value);
+                      setState(() => post = value);
+                    });
+                  },
+                ),
               ),
               SpeedDialChild(
-                  child: Icon(Icons.thumb_up),
-                  backgroundColor: Colors.green,
-                  label: 'J\'aime',
-                  labelStyle: TextStyle(
-                      fontSize: _screenHeight * 0.02,
-                      fontWeight: FontWeight.bold),
-                  onTap: () => {
-                        setState(() {
-                          if (_isLiked) {
-                            _isLiked = false;
-                          } else {
-                            _isDisliked = false;
-                            _isLiked = true;
-                          }
-                        })
-                      }),
+                child: Icon(Icons.thumb_up),
+                backgroundColor: Colors.green,
+                label: 'J\'aime',
+                labelStyle: TextStyle(
+                    fontSize: _screenHeight * 0.02,
+                    fontWeight: FontWeight.bold),
+                onTap: () => reactPost(post.id, "like").then(
+                  (_) {
+                    setState(() {
+                      post.likeStatus = 1;
+                    });
+                    getPost(post.id).then((value) {
+                      widget.setPost(value);
+                      setState(() => post = value);
+                    });
+                  },
+                ),
+              ),
             ],
           ),
         ),

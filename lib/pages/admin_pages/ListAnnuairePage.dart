@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:polypeip/custom_icons/font_awesome_icons.dart';
 import 'package:polypeip/custom_widgets/CustomBackAppBar.dart';
 import 'package:polypeip/custom_widgets/CustomRoundedButton.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
+import 'package:polypeip/models/Contact.dart';
+import 'package:polypeip/pages/admin_pages/AnnuaireEditPage.dart';
+import 'package:polypeip/services/requests.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ListAnnuairePage extends StatefulWidget {
@@ -14,31 +18,18 @@ class _ListAnnuairePageState extends State<ListAnnuairePage> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
-  List<Map<String, String>> staff = [
-    {
-      "id": "64az949dz",
-      "name": "Henri",
-      "surname": "Lesquin",
-      "mail": "henri@lesquin.fr",
-      "phone": "0698324679",
-    },
-    {
-      "id": "64az949dz",
-      "name": "Henri",
-      "surname": "Lesquin",
-      "mail": "henri@lesquin.fr",
-      "phone": "0698324679",
-    },
-    {
-      "id": "64az949dz",
-      "name": "Henri",
-      "surname": "Lesquin",
-      "mail": "henri@lesquin.fr",
-      "phone": "0698324679",
-    },
-  ];
+  List<Contact> contacts;
 
   Color adminColor = Color(0xFF7f8fa6);
+
+  @override
+  void initState() {
+    super.initState();
+
+    getContacts().then((value) {
+      setState(() => contacts = value);
+    });
+  }
 
   Widget buildEditForm(height, width, index) {
     return Container(
@@ -72,19 +63,19 @@ class _ListAnnuairePageState extends State<ListAnnuairePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   CustomText(
-                    text: staff[index]['name'] + staff[index]['surname'],
+                    text: contacts[index].name + contacts[index].surname,
                     fontColor: FontColor.black,
                     fontSize: FontSize.md,
                     fontWeight: FontWeight.bold,
                   ),
                   CustomText(
-                    text: staff[index]['mail'],
+                    text: contacts[index].email,
                     fontColor: FontColor.black,
                     fontSize: FontSize.sm,
                     fontWeight: FontWeight.w400,
                   ),
                   CustomText(
-                    text: staff[index]['phone'],
+                    text: contacts[index].tel,
                     fontColor: FontColor.black,
                     fontSize: FontSize.sm,
                     fontWeight: FontWeight.w400,
@@ -97,15 +88,24 @@ class _ListAnnuairePageState extends State<ListAnnuairePage> {
                 children: <Widget>[
                   GestureDetector(
                     child: Icon(Icons.edit, color: Colors.grey[800]),
-                    onTap: () => {
-                      Navigator.pushNamed(context, "/edit/editAnnuaire",
-                          arguments: {"staffId": staff[index]['_id']})
-                    },
+                    onTap: () => Navigator.push(
+                      context,
+                      PageTransition(
+                        child: AnnuaireEditPage(
+                          contact: contacts[index],
+                        ),
+                        type: PageTransitionType.downToUp,
+                      ),
+                    ),
                   ),
                   Padding(padding: EdgeInsets.only(right: width * 0.05)),
                   GestureDetector(
                     child: Icon(Icons.delete, color: Colors.grey[800]),
-                    onTap: () => print("delete"),
+                    onTap: () => removeContact(contacts[index].id).then(
+                      (value) => setState(
+                        () => contacts.removeAt(index),
+                      ),
+                    ),
                   )
                 ],
               ),
@@ -148,13 +148,13 @@ class _ListAnnuairePageState extends State<ListAnnuairePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   CustomText(
-                    text: table[index]['name'] + staff[index]['surname'],
+                    text: table[index]['name'] + contacts[index].surname,
                     fontColor: FontColor.black,
                     fontSize: FontSize.md,
                     fontWeight: FontWeight.bold,
                   ),
                   CustomText(
-                    text: staff[index]['link'],
+                    text: contacts[index].email,
                     fontColor: FontColor.black,
                     fontSize: FontSize.sm,
                     fontWeight: FontWeight.w400,
@@ -169,7 +169,7 @@ class _ListAnnuairePageState extends State<ListAnnuairePage> {
                     child: Icon(Icons.edit, color: Colors.grey[800]),
                     onTap: () => {
                       Navigator.pushNamed(context, "/edit/editAnnuaire",
-                          arguments: {"staffId": staff[index]['_id']})
+                          arguments: {"staffId": contacts[index].id})
                     },
                   ),
                   Padding(padding: EdgeInsets.only(right: width * 0.05)),
@@ -243,44 +243,45 @@ class _ListAnnuairePageState extends State<ListAnnuairePage> {
           heightScreen: _screenHeight,
           widthScreen: _screenWidth),
       body: SmartRefresher(
-          controller: _refreshController,
-          enablePullDown: true,
-          enablePullUp: false,
-          header: WaterDropMaterialHeader(),
-          onRefresh: () async {
-            await Future.delayed(Duration(milliseconds: 1000));
-            _refreshController.refreshCompleted();
+        controller: _refreshController,
+        enablePullDown: true,
+        enablePullUp: false,
+        header: WaterDropMaterialHeader(),
+        onRefresh: () async {
+          await Future.delayed(Duration(milliseconds: 1000));
+          _refreshController.refreshCompleted();
+        },
+        child: ListView.builder(
+          shrinkWrap: true,
+          physics: ClampingScrollPhysics(),
+          itemCount: contacts != null ? contacts.length : 0,
+          itemBuilder: (context, index) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                (index == 0)
+                    ? buildTopContent(_screenHeight, _screenWidth)
+                    : Container(),
+                (index == 0)
+                    ? Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: _screenHeight * 0.03,
+                          horizontal: _screenWidth * 0.05,
+                        ),
+                        child: buildAddButton(_screenHeight, _screenWidth),
+                      )
+                    : Container(),
+                Padding(padding: EdgeInsets.only(top: _screenHeight * 0.03)),
+                buildEditForm(_screenHeight, _screenWidth, index),
+                index == (contacts != null ? contacts.length - 1 : 0)
+                    ? Padding(
+                        padding: EdgeInsets.only(top: _screenHeight * 0.05))
+                    : Container(),
+              ],
+            );
           },
-          child: ListView.builder(
-            shrinkWrap: true,
-            physics: ClampingScrollPhysics(),
-            itemCount: staff.length,
-            itemBuilder: (context, index) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  (index == 0)
-                      ? buildTopContent(_screenHeight, _screenWidth)
-                      : Container(),
-                  (index == 0)
-                      ? Padding(
-                          padding: EdgeInsets.symmetric(
-                            vertical: _screenHeight * 0.03,
-                            horizontal: _screenWidth * 0.05,
-                          ),
-                          child: buildAddButton(_screenHeight, _screenWidth),
-                        )
-                      : Container(),
-                  Padding(padding: EdgeInsets.only(top: _screenHeight * 0.03)),
-                  buildEditForm(_screenHeight, _screenWidth, index),
-                  (index == staff.length - 1)
-                      ? Padding(
-                          padding: EdgeInsets.only(top: _screenHeight * 0.05))
-                      : Container(),
-                ],
-              );
-            },
-          )),
+        ),
+      ),
     );
   }
 }

@@ -9,6 +9,7 @@ class CustomTextArea extends StatelessWidget {
   final int maxLines;
   final bool showSendIcon;
   final TextInputAction inputType;
+  final TextEditingController controller;
 
   CustomTextArea({
     @required this.heightScreen,
@@ -16,6 +17,7 @@ class CustomTextArea extends StatelessWidget {
     @required this.borderColor,
     @required this.placeHolder,
     @required this.showSendIcon,
+    @required this.controller,
     this.inputColor = Colors.white,
     this.maxLines = 1,
     this.inputType = TextInputAction.done,
@@ -39,6 +41,7 @@ class CustomTextArea extends StatelessWidget {
           children: <Widget>[
             Expanded(
               child: TextField(
+                controller: controller,
                 textInputAction: this.inputType,
                 minLines: 1,
                 maxLines: this.maxLines,

@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:polypeip/custom_icons/font_awesome_icons.dart';
 import 'package:polypeip/custom_widgets/CustomBackAppBar.dart';
 import 'package:polypeip/custom_widgets/CustomRoundedButton.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
+import 'package:polypeip/models/Event.dart';
+import 'package:polypeip/pages/PostEventPage.dart';
+import 'package:polypeip/pages/admin_pages/EventEditPage.dart';
+import 'package:polypeip/services/requests.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ListEventsPage extends StatefulWidget {
@@ -14,113 +19,109 @@ class _ListEventsPageState extends State<ListEventsPage> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
-  List<Map<String, String>> events = [
-    {
-      "id": "64az949dz",
-      "title": "Quais St Bernard",
-      "date": "12/05/2020",
-      "hour": "18:00",
-    },
-    {
-      "id": "64az949dz",
-      "title": "Quais St Bernard",
-      "date": "12/05/2020",
-      "hour": "18:00",
-    },
-    {
-      "id": "64az949dz",
-      "title": "Quais St Bernard",
-      "date": "12/05/2020",
-      "hour": "18:00",
-    },
-    {
-      "id": "64az949dz",
-      "title": "Quais St Bernard",
-      "date": "12/05/2020",
-      "hour": "18:00",
-    },
-    {
-      "id": "64az949dz",
-      "title": "Quais St Bernard",
-      "date": "12/05/2020",
-      "hour": "18:00",
-    },
-  ];
+  List<Event> events;
+
+  @override
+  void initState() {
+    super.initState();
+
+    getEvents().then((value) {
+      setState(() => events = value);
+    });
+  }
 
   Color adminColor = Color(0xFF7f8fa6);
 
   Widget buildEditForm(height, width, index) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: width * 0.05),
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        PageTransition(
+          child: PostEventPage(eventId: events[index].id),
+          type: PageTransitionType.downToUp,
+        ),
+      ),
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: width * 0.05),
-        height: height * 0.13,
-        width: width,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: Colors.grey[200],
-          border: Border.all(color: Colors.grey[400], width: 0.3),
-          borderRadius: BorderRadius.circular(13),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.grey[400],
-                blurRadius: 5, // has the effect of softening the shadow
-                spreadRadius: -5, // has the effect of extending the shadow
-                offset: Offset(
-                  0, // horizontal, move right 10
-                  8, // vertical, move down 10
-                ))
-          ],
-        ),
-        child: Row(
-          children: <Widget>[
-            Container(
-              width: width * 0.6,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  CustomText(
-                    text: events[index]['title'],
-                    fontColor: FontColor.black,
-                    fontSize: FontSize.md,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  Padding(padding: EdgeInsets.only(bottom: height * 0.015)),
-                  CustomText(
-                    text: events[index]['date'],
-                    fontColor: FontColor.black,
-                    fontSize: FontSize.sm,
-                    fontWeight: FontWeight.w400,
-                  ),
-                  CustomText(
-                    text: events[index]['hour'],
-                    fontColor: FontColor.black,
-                    fontSize: FontSize.xs,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ],
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: width * 0.05),
+          height: height * 0.13,
+          width: width,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: Colors.grey[200],
+            border: Border.all(color: Colors.grey[400], width: 0.3),
+            borderRadius: BorderRadius.circular(13),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.grey[400],
+                  blurRadius: 5, // has the effect of softening the shadow
+                  spreadRadius: -5, // has the effect of extending the shadow
+                  offset: Offset(
+                    0, // horizontal, move right 10
+                    8, // vertical, move down 10
+                  ))
+            ],
+          ),
+          child: Row(
+            children: <Widget>[
+              Container(
+                width: width * 0.6,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    CustomText(
+                      text: events[index].name,
+                      fontColor: FontColor.black,
+                      fontSize: FontSize.md,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    Padding(padding: EdgeInsets.only(bottom: height * 0.015)),
+                    CustomText(
+                      text: events[index].date.toIso8601String(),
+                      fontColor: FontColor.black,
+                      fontSize: FontSize.sm,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    CustomText(
+                      text: events[index].date.hour.toString(),
+                      fontColor: FontColor.black,
+                      fontSize: FontSize.xs,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Expanded(
-              child: Row(
-                children: <Widget>[
-                  GestureDetector(
-                    child: Icon(Icons.edit, color: Colors.grey[800]),
-                    onTap: () => {
-                      Navigator.pushNamed(context, "/edit/editEvent",
-                          arguments: {"eventId": events[index]['_id']})
-                    },
-                  ),
-                  Padding(padding: EdgeInsets.only(right: width * 0.05)),
-                  GestureDetector(
-                    child: Icon(Icons.delete, color: Colors.grey[800]),
-                    onTap: () => print("delete"),
-                  )
-                ],
+              Expanded(
+                child: Row(
+                  children: <Widget>[
+                    GestureDetector(
+                      child: Icon(Icons.edit, color: Colors.grey[800]),
+                      onTap: () => Navigator.push(
+                        context,
+                        PageTransition(
+                          child: EventEditPage(
+                            event: events[index],
+                          ),
+                          type: PageTransitionType.downToUp,
+                        ),
+                      ),
+                    ),
+                    Padding(padding: EdgeInsets.only(right: width * 0.05)),
+                    GestureDetector(
+                      child: Icon(Icons.delete, color: Colors.grey[800]),
+                      onTap: () => removeEvent(events[index].id).then(
+                        (value) => setState(
+                          () => events.removeAt(index),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -194,7 +195,7 @@ class _ListEventsPageState extends State<ListEventsPage> {
           child: ListView.builder(
             shrinkWrap: true,
             physics: ClampingScrollPhysics(),
-            itemCount: events.length,
+            itemCount: events != null ? events.length : 0,
             itemBuilder: (context, index) {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

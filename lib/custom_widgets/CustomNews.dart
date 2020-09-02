@@ -1,15 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
+import 'package:polypeip/models/Post.dart';
+import 'package:polypeip/pages/PostPage.dart';
+import 'package:polypeip/services/requests.dart';
 
 class CustomNews extends StatefulWidget {
   final double heightScreen;
   final double widthScreen;
-  final String newsId;
-  final String newsTitle;
-  final String newsDescription;
-  final DateTime newsDate;
-  final String newsImage;
+  final Post post;
 
   final imageHeight = 0.3;
   final imageWidth = 1;
@@ -17,11 +17,7 @@ class CustomNews extends StatefulWidget {
   CustomNews({
     @required this.heightScreen,
     @required this.widthScreen,
-    @required this.newsId,
-    @required this.newsTitle,
-    @required this.newsDescription,
-    @required this.newsDate,
-    @required this.newsImage,
+    @required this.post,
   });
 
   @override
@@ -31,15 +27,13 @@ class CustomNews extends StatefulWidget {
 class _CustomNews extends State<CustomNews> {
   GlobalKey _bottomInfoKey = new GlobalKey();
   GlobalKey _topInfoKey = new GlobalKey();
-
-  bool _isLiked = false;
-  bool _isDisliked = false;
+  Post post;
 
   @override
-  void setState(fn) {
-    if (mounted) {
-      super.setState(fn);
-    }
+  void initState() {
+    super.initState();
+
+    post = widget.post;
   }
 
   Widget newsPoster() {
@@ -48,7 +42,7 @@ class _CustomNews extends State<CustomNews> {
 
     return GestureDetector(
       child: CachedNetworkImage(
-        imageUrl: widget.newsImage,
+        imageUrl: post.img,
         height: imageHeight,
         width: imageWidth,
         fit: BoxFit.fill,
@@ -67,19 +61,25 @@ class _CustomNews extends State<CustomNews> {
               color: Colors.grey[400]);
         },
       ),
-      onTap: () {
-        return Navigator.pushNamed(context, "/post",
-            arguments: {"postId": widget.newsId});
-      },
+      onTap: () => Navigator.push(
+        context,
+        PageTransition(
+          child: PostPage(
+            post: post,
+            setPost: (Post p) => setState(() => post = p),
+          ),
+          type: PageTransitionType.downToUp,
+        ),
+      ),
       onDoubleTap: () {
-        setState(() {
-          if (_isLiked) {
-            _isLiked = false;
-          } else {
-            _isDisliked = false;
-            _isLiked = true;
-          }
-        });
+        reactPost(post.id, post.likeStatus == 1 ? "cancel-like" : "like").then(
+          (value) {
+            setState(() {
+              post.likeStatus = post.likeStatus == 1 ? 0 : 1;
+            });
+            getPost(post.id).then((value) => setState(() => post = value));
+          },
+        );
       },
     );
   }
@@ -93,17 +93,23 @@ class _CustomNews extends State<CustomNews> {
               horizontal: 0, vertical: widget.widthScreen * 0.028),
           color: CustomText.textColor(FontColor.blue),
           child: CustomText(
-            text: widget.newsTitle,
+            text: post.name,
             fontColor: FontColor.white,
             fontSize: FontSize.lg,
             alignment: TextAlign.center,
             fontWeight: FontWeight.bold,
             uppercase: true,
           )),
-      onTap: () {
-        return Navigator.pushNamed(context, "/post",
-            arguments: {"postId": widget.newsId});
-      },
+      onTap: () => Navigator.push(
+        context,
+        PageTransition(
+          child: PostPage(
+            post: post,
+            setPost: (Post p) => setState(() => post = p),
+          ),
+          type: PageTransitionType.downToUp,
+        ),
+      ),
     );
   }
 
@@ -119,7 +125,7 @@ class _CustomNews extends State<CustomNews> {
                   padding: EdgeInsetsDirectional.only(
                       top: widget.heightScreen * 0.02)),
               CustomText(
-                text: widget.newsDate.toIso8601String(),
+                text: post.date.toIso8601String(),
                 fontColor: FontColor.darkGrey,
                 fontSize: FontSize.xs,
               ),
@@ -127,7 +133,7 @@ class _CustomNews extends State<CustomNews> {
                   padding: EdgeInsetsDirectional.only(
                       top: widget.heightScreen * 0.015)),
               CustomText(
-                text: widget.newsDescription,
+                text: post.content,
                 fontColor: FontColor.black,
                 fontSize: FontSize.sm,
                 alignment: TextAlign.start,
@@ -153,8 +159,8 @@ class _CustomNews extends State<CustomNews> {
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: <Widget>[
                                   CustomText(
-                                    text: "76",
-                                    fontColor: _isLiked
+                                    text: post.totalLikes.toString(),
+                                    fontColor: post.likeStatus == 1
                                         ? FontColor.blue
                                         : FontColor.darkGrey,
                                     fontSize: FontSize.md,
@@ -167,7 +173,7 @@ class _CustomNews extends State<CustomNews> {
                                   Icon(
                                     Icons.thumb_up,
                                     size: CustomText.textSize(FontSize.lg),
-                                    color: _isLiked
+                                    color: post.likeStatus == 1
                                         ? CustomText.textColor(FontColor.blue)
                                         : CustomText.textColor(
                                             FontColor.darkGrey),
@@ -175,13 +181,16 @@ class _CustomNews extends State<CustomNews> {
                                 ]),
                           ),
                           onTap: () {
-                            setState(() {
-                              if (_isLiked) {
-                                _isLiked = false;
-                              } else {
-                                _isDisliked = false;
-                                _isLiked = true;
-                              }
+                            reactPost(
+                                    post.id,
+                                    post.likeStatus == 1
+                                        ? "cancel-like"
+                                        : "like")
+                                .then((_) {
+                              setState(() => post.likeStatus =
+                                  post.likeStatus == 1 ? 0 : 1);
+                              getPost(post.id).then(
+                                  (value) => setState(() => post = value));
                             });
                           },
                         ),
@@ -190,45 +199,64 @@ class _CustomNews extends State<CustomNews> {
                                 horizontal: widget.widthScreen * 0.03)),
                         GestureDetector(
                           child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: <Widget>[
-                                CustomText(
-                                  text: "34",
-                                  fontColor: _isDisliked
-                                      ? FontColor.blue
-                                      : FontColor.darkGrey,
-                                  fontSize: FontSize.md,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: widget.widthScreen * 0.01)),
-                                Icon(
-                                  Icons.thumb_down,
-                                  size: CustomText.textSize(FontSize.lg),
-                                  color: _isDisliked
-                                      ? CustomText.textColor(FontColor.blue)
-                                      : CustomText.textColor(
-                                          FontColor.darkGrey),
-                                )
-                              ]),
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              CustomText(
+                                text: post.nbTotalDislikes == 0
+                                    ? "0"
+                                    : post.nbTotalDislikes.toString(),
+                                fontColor: post.likeStatus == -1
+                                    ? FontColor.blue
+                                    : FontColor.darkGrey,
+                                fontSize: FontSize.md,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: widget.widthScreen * 0.01)),
+                              Icon(
+                                Icons.thumb_down,
+                                size: CustomText.textSize(FontSize.lg),
+                                color: post.likeStatus == -1
+                                    ? CustomText.textColor(FontColor.blue)
+                                    : CustomText.textColor(
+                                        FontColor.darkGrey,
+                                      ),
+                              )
+                            ],
+                          ),
                           onTap: () {
-                            setState(() {
-                              if (_isDisliked) {
-                                _isDisliked = false;
-                              } else {
-                                _isDisliked = true;
-                                _isLiked = false;
-                              }
-                            });
+                            reactPost(
+                                    post.id,
+                                    post.likeStatus == -1
+                                        ? "cancel-like"
+                                        : "dislike")
+                                .then(
+                              (_) {
+                                setState(() {
+                                  post.likeStatus =
+                                      post.likeStatus == -1 ? 0 : -1;
+                                });
+                                getPost(post.id).then(
+                                    (value) => setState(() => post = value));
+                              },
+                            );
                           },
                         )
                       ]))
             ],
           )),
       onTap: () {
-        return Navigator.pushNamed(context, "/post",
-            arguments: {"postId": widget.newsId});
+        Navigator.push(
+          context,
+          PageTransition(
+            child: PostPage(
+              post: post,
+              setPost: (Post p) => setState(() => post = p),
+            ),
+            type: PageTransitionType.downToUp,
+          ),
+        );
       },
     );
   }

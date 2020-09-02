@@ -17,6 +17,9 @@ class MessageWritePage extends StatefulWidget {
 }
 
 class _MessageWritePageState extends State<MessageWritePage> {
+  TextEditingController messageTFC = TextEditingController();
+  TextEditingController subjectTFC = TextEditingController();
+
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
@@ -52,6 +55,7 @@ class _MessageWritePageState extends State<MessageWritePage> {
             padding: EdgeInsets.symmetric(vertical: _screenHeight * 0.06),
           ),
           CustomTextArea(
+            controller: subjectTFC,
             heightScreen: _screenHeight,
             widthScreen: _screenWidth,
             inputColor: Colors.grey[800],
@@ -62,6 +66,7 @@ class _MessageWritePageState extends State<MessageWritePage> {
           ),
           Padding(padding: EdgeInsets.only(bottom: _screenHeight * 0.02)),
           CustomTextArea(
+            controller: messageTFC,
             heightScreen: _screenHeight,
             widthScreen: _screenWidth,
             inputColor: Colors.grey[800],

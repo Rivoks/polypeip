@@ -13,6 +13,7 @@ import 'package:polypeip/pages/PostMessagePage.dart';
 import 'package:polypeip/pages/PostPage.dart';
 import 'package:polypeip/pages/SettingsPage.dart';
 import 'package:polypeip/pages/MessagePage.dart';
+import 'package:polypeip/pages/SigninPage.dart';
 import 'package:polypeip/pages/admin_pages/ActivitesAddPage.dart';
 import 'package:polypeip/pages/admin_pages/ActivitesEditPage.dart';
 import 'package:polypeip/pages/admin_pages/ActivitesPage.dart';
@@ -23,11 +24,8 @@ import 'package:polypeip/pages/admin_pages/EventEditPage.dart';
 import 'package:polypeip/pages/admin_pages/GoodiesAddPage.dart';
 import 'package:polypeip/pages/admin_pages/GoodiesEditPage.dart';
 import 'package:polypeip/pages/admin_pages/GoodiesPage.dart';
-import 'package:polypeip/pages/admin_pages/LinksAddPage.dart';
-import 'package:polypeip/pages/admin_pages/LinksEditPage.dart';
 import 'package:polypeip/pages/admin_pages/ListAnnuairePage.dart';
 import 'package:polypeip/pages/admin_pages/ListEventsPage.dart';
-import 'package:polypeip/pages/admin_pages/ListLinksPage.dart';
 import 'package:polypeip/pages/admin_pages/ListReseauxPage.dart';
 import 'package:polypeip/pages/admin_pages/MessageWritePage.dart';
 import 'package:polypeip/pages/admin_pages/MessageriePage.dart';
@@ -121,6 +119,10 @@ class MyApp extends StatelessWidget {
               return PageTransition(
                   child: LoginPage(), type: PageTransitionType.fade);
               break;
+            case "/signin":
+              return PageTransition(
+                  child: SigninPage(), type: PageTransitionType.fade);
+              break;
             case "/edit/activites":
               return PageTransition(
                   child: ActivitesPage(), type: PageTransitionType.rightToLeft);
@@ -139,10 +141,6 @@ class MyApp extends StatelessWidget {
               return PageTransition(
                   child: ListReseauxPage(),
                   type: PageTransitionType.rightToLeft);
-              break;
-            case "/edit/links":
-              return PageTransition(
-                  child: ListLinksPage(), type: PageTransitionType.rightToLeft);
               break;
             case "/edit/planEdt":
               return PageTransition(
@@ -176,10 +174,6 @@ class MyApp extends StatelessWidget {
                   child: ReseauxAddPage(),
                   type: PageTransitionType.rightToLeft);
               break;
-            case "/edit/addLinks":
-              return PageTransition(
-                  child: LinksAddPage(), type: PageTransitionType.rightToLeft);
-              break;
             case "/edit/addPlanEdt":
               return PageTransition(
                   child: PlanEdtAddPage(),
@@ -193,35 +187,29 @@ class MyApp extends StatelessWidget {
             case '/edit/editActivite':
               return PageTransition(
                   child: ActivitesEditPage(
-                    activiteId: getParameters(settings.arguments, 'activiteId'),
+                    post: getParameters(settings.arguments, 'post'),
                   ),
                   type: PageTransitionType.rightToLeft);
               break;
             case '/edit/editEvent':
               return PageTransition(
                   child: EventEditPage(
-                    eventId: getParameters(settings.arguments, 'eventId'),
+                    event: getParameters(settings.arguments, 'event'),
                   ),
                   type: PageTransitionType.rightToLeft);
               break;
             case '/edit/editAnnuaire':
               return PageTransition(
                   child: AnnuaireEditPage(
-                    staffId: getParameters(settings.arguments, 'staffId'),
+                    contact: getParameters(settings.arguments, 'contact'),
                   ),
                   type: PageTransitionType.rightToLeft);
               break;
             case '/edit/editReseaux':
               return PageTransition(
                   child: ReseauxEditPage(
-                    reseauxId: getParameters(settings.arguments, 'reseauxId'),
-                  ),
-                  type: PageTransitionType.rightToLeft);
-              break;
-            case '/edit/editLinks':
-              return PageTransition(
-                  child: LinksEditPage(
-                    linksId: getParameters(settings.arguments, 'linksId'),
+                    socialNetwork:
+                        getParameters(settings.arguments, 'socialNetwork'),
                   ),
                   type: PageTransitionType.rightToLeft);
               break;
@@ -235,14 +223,14 @@ class MyApp extends StatelessWidget {
             case '/edit/editGoodies':
               return PageTransition(
                   child: GoodiesEditPage(
-                    goodiesId: getParameters(settings.arguments, 'goodiesId'),
+                    goodie: getParameters(settings.arguments, 'goodie'),
                   ),
                   type: PageTransitionType.rightToLeft);
               break;
             case '/post':
               return PageTransition(
                   child: PostPage(
-                    postId: getParameters(settings.arguments, 'postId'),
+                    post: getParameters(settings.arguments, 'post'),
                   ),
                   type: PageTransitionType.downToUp);
               break;

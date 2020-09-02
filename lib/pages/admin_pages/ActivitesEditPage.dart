@@ -7,12 +7,14 @@ import 'package:polypeip/custom_icons/font_awesome_icons.dart';
 import 'package:polypeip/custom_widgets/CustomBackAppBar.dart';
 import 'package:polypeip/custom_widgets/CustomRoundedButton.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
+import 'package:polypeip/models/Post.dart';
+import 'package:polypeip/services/requests.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ActivitesEditPage extends StatefulWidget {
-  ActivitesEditPage({@required this.activiteId});
+  ActivitesEditPage({@required this.post});
 
-  final String activiteId;
+  final Post post;
 
   @override
   _ActivitesEditPageState createState() => _ActivitesEditPageState();
@@ -20,6 +22,8 @@ class ActivitesEditPage extends StatefulWidget {
 
 class _ActivitesEditPageState extends State<ActivitesEditPage> {
   File _image;
+  TextEditingController nameTFC = TextEditingController();
+  TextEditingController contentTFC = TextEditingController();
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -27,11 +31,20 @@ class _ActivitesEditPageState extends State<ActivitesEditPage> {
   double _screenHeight;
   double _screenWidth;
 
+  Post post;
   double spaceInput = 0.1;
 
   Color blue = CustomText.textColor(FontColor.blue);
 
   Color adminColor = Color(0xFF7f8fa6);
+
+  @override
+  void initState() {
+    super.initState();
+
+    nameTFC.text = widget.post.name;
+    contentTFC.text = widget.post.content;
+  }
 
   Future imageCamera() async {
     var image = await ImagePicker.pickImage(source: ImageSource.camera);
@@ -183,7 +196,14 @@ class _ActivitesEditPageState extends State<ActivitesEditPage> {
         fontWeight: FontWeight.bold,
         backgroundColor: blue,
         borderColor: blue,
-        onPressed: () => print('submit'),
+        onPressed: () => editPost(
+          widget.post.id,
+          nameTFC.text,
+          contentTFC.text,
+          _image,
+        ).then(
+          (value) => Navigator.pop(context),
+        ),
       ),
     );
   }
@@ -195,6 +215,7 @@ class _ActivitesEditPageState extends State<ActivitesEditPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           TextField(
+            controller: nameTFC,
             decoration: InputDecoration(
               hintText: "Titre de l'activité",
               hintStyle: TextStyle(
@@ -255,6 +276,7 @@ class _ActivitesEditPageState extends State<ActivitesEditPage> {
           ),
           Padding(padding: EdgeInsets.only(bottom: _screenHeight * 0.01)),
           TextField(
+            controller: contentTFC,
             minLines: 1,
             maxLines: null,
             onChanged: (_) => {

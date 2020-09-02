@@ -4,12 +4,14 @@ import 'package:polypeip/custom_icons/font_awesome_icons.dart';
 import 'package:polypeip/custom_widgets/CustomBackAppBar.dart';
 import 'package:polypeip/custom_widgets/CustomRoundedButton.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
+import 'package:polypeip/models/Event.dart';
+import 'package:polypeip/services/requests.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class EventEditPage extends StatefulWidget {
-  EventEditPage({@required this.eventId});
+  EventEditPage({@required this.event});
 
-  final String eventId;
+  final Event event;
 
   @override
   _EventEditPageState createState() => _EventEditPageState();
@@ -19,14 +21,26 @@ class _EventEditPageState extends State<EventEditPage> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
+  TextEditingController nameTFC = TextEditingController();
+  TextEditingController descriptionTFC = TextEditingController();
+  DateTime date = DateTime.now();
+
   double _screenHeight;
   double _screenWidth;
 
   double spaceInput = 0.1;
 
   Color blue = CustomText.textColor(FontColor.blue);
-
   Color adminColor = Color(0xFF7f8fa6);
+
+  @override
+  void initState() {
+    super.initState();
+
+    nameTFC.text = widget.event.name;
+    descriptionTFC.text = widget.event.description;
+    date = widget.event.date;
+  }
 
   Widget buildTopContent() {
     return Container(
@@ -82,7 +96,13 @@ class _EventEditPageState extends State<EventEditPage> {
         fontWeight: FontWeight.bold,
         backgroundColor: blue,
         borderColor: blue,
-        onPressed: () => print('submit'),
+        onPressed: () => editEvent(
+          widget.event.id,
+          nameTFC.text,
+          descriptionTFC.text,
+        ).then(
+          (value) => Navigator.pop(context),
+        ),
       ),
     );
   }
@@ -94,6 +114,7 @@ class _EventEditPageState extends State<EventEditPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           TextField(
+            controller: nameTFC,
             decoration: InputDecoration(
               hintText: "Titre de l'évènement",
               hintStyle: TextStyle(
@@ -148,6 +169,26 @@ class _EventEditPageState extends State<EventEditPage> {
                     ),
                   ),
                 ],
+              ),
+            ),
+          ),
+          Padding(padding: EdgeInsets.only(bottom: _screenHeight * 0.01)),
+          TextField(
+            controller: descriptionTFC,
+            minLines: 1,
+            maxLines: null,
+            onChanged: (_) => {
+              setState(() {
+                spaceInput = 0;
+              })
+            },
+            decoration: InputDecoration(
+              contentPadding:
+                  EdgeInsets.only(bottom: _screenHeight * spaceInput),
+              hintText: "Description de l'event",
+              hintStyle: TextStyle(
+                fontStyle: FontStyle.italic,
+                color: Colors.grey[500],
               ),
             ),
           ),

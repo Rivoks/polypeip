@@ -6,12 +6,14 @@ import 'package:polypeip/custom_icons/font_awesome_icons.dart';
 import 'package:polypeip/custom_widgets/CustomBackAppBar.dart';
 import 'package:polypeip/custom_widgets/CustomRoundedButton.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
+import 'package:polypeip/models/Goodie.dart';
+import 'package:polypeip/services/requests.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class GoodiesEditPage extends StatefulWidget {
-  GoodiesEditPage({@required this.goodiesId});
+  GoodiesEditPage({@required this.goodie});
 
-  final String goodiesId;
+  final Goodie goodie;
 
   @override
   _GoodiesEditPageState createState() => _GoodiesEditPageState();
@@ -23,6 +25,10 @@ class _GoodiesEditPageState extends State<GoodiesEditPage> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
+  TextEditingController nameTFC = TextEditingController();
+  TextEditingController descriptionTFC = TextEditingController();
+  TextEditingController priceTFC = TextEditingController();
+
   double _screenHeight;
   double _screenWidth;
 
@@ -31,6 +37,15 @@ class _GoodiesEditPageState extends State<GoodiesEditPage> {
   Color blue = CustomText.textColor(FontColor.blue);
 
   Color adminColor = Color(0xFF7f8fa6);
+
+  @override
+  void initState() {
+    super.initState();
+
+    nameTFC.text = widget.goodie.name;
+    descriptionTFC.text = widget.goodie.description;
+    priceTFC.text = widget.goodie.price.toString();
+  }
 
   Future imageCamera() async {
     var image = await ImagePicker.pickImage(source: ImageSource.camera);
@@ -182,7 +197,15 @@ class _GoodiesEditPageState extends State<GoodiesEditPage> {
         fontWeight: FontWeight.bold,
         backgroundColor: blue,
         borderColor: blue,
-        onPressed: () => print('submit'),
+        onPressed: () => editGoodie(
+          widget.goodie.id,
+          nameTFC.text,
+          descriptionTFC.text,
+          priceTFC.text,
+          _image,
+        ).then(
+          (value) => Navigator.pop(context),
+        ),
       ),
     );
   }
@@ -194,6 +217,7 @@ class _GoodiesEditPageState extends State<GoodiesEditPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           TextField(
+            controller: nameTFC,
             decoration: InputDecoration(
               hintText: "Titre du produit",
               hintStyle: TextStyle(
@@ -204,6 +228,7 @@ class _GoodiesEditPageState extends State<GoodiesEditPage> {
           ),
           Padding(padding: EdgeInsets.only(bottom: _screenHeight * 0.05)),
           TextField(
+            controller: descriptionTFC,
             minLines: 1,
             maxLines: null,
             onChanged: (_) => {
@@ -229,6 +254,7 @@ class _GoodiesEditPageState extends State<GoodiesEditPage> {
                 Container(
                   width: _screenWidth * 0.4,
                   child: TextField(
+                    controller: priceTFC,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       hintText: "Prix du produit",

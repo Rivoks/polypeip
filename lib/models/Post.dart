@@ -5,7 +5,8 @@ class Post {
   final String img;
   final int totalLikes;
   final int nbTotalLikes;
-  final int nbTotalUnlikes;
+  final int nbTotalDislikes;
+  int likeStatus;
   final DateTime date;
 
   Post({
@@ -15,7 +16,8 @@ class Post {
     this.img,
     this.totalLikes,
     this.nbTotalLikes,
-    this.nbTotalUnlikes,
+    this.nbTotalDislikes,
+    this.likeStatus,
     this.date,
   });
 
@@ -27,8 +29,10 @@ class Post {
             ? post['img']
             : "https://static.lexpress.fr/medias_11577/w_2000,h_1120,c_fill,g_center/v1502354725/paris-vu-du-ciel-des-images-epoustouflantes-filmees-par-un-drone_5927848.jpg",
         totalLikes: post['totalLikes'],
-        nbTotalLikes: post['nbTotalLikes'],
-        nbTotalUnlikes: post['nbTotalUnlikes'],
+        nbTotalLikes: post['totalLikes'],
+        nbTotalDislikes: post['totalDislikes'],
+        likeStatus:
+            post['likes'] != null ? 1 : post['dislikes'] != null ? -1 : 0,
         date: DateTime.parse(post['date']),
       );
 }

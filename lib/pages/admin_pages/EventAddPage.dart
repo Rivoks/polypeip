@@ -4,6 +4,7 @@ import 'package:polypeip/custom_icons/font_awesome_icons.dart';
 import 'package:polypeip/custom_widgets/CustomBackAppBar.dart';
 import 'package:polypeip/custom_widgets/CustomRoundedButton.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
+import 'package:polypeip/services/requests.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class EventAddPage extends StatefulWidget {
@@ -15,13 +16,15 @@ class _EventAddPageState extends State<EventAddPage> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
+  TextEditingController nameTFC = TextEditingController();
+  TextEditingController descriptionTFC = TextEditingController();
+  DateTime date = DateTime.now();
+
   double _screenHeight;
   double _screenWidth;
-
   double spaceInput = 0.1;
 
   Color blue = CustomText.textColor(FontColor.blue);
-
   Color adminColor = Color(0xFF7f8fa6);
 
   Widget buildTopContent() {
@@ -78,7 +81,12 @@ class _EventAddPageState extends State<EventAddPage> {
         fontWeight: FontWeight.bold,
         backgroundColor: blue,
         borderColor: blue,
-        onPressed: () => print('submit'),
+        onPressed: () => addEvent(
+          nameTFC.text,
+          descriptionTFC.text,
+        ).then(
+          (value) => Navigator.pop(context),
+        ),
       ),
     );
   }
@@ -90,6 +98,7 @@ class _EventAddPageState extends State<EventAddPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           TextField(
+            controller: nameTFC,
             decoration: InputDecoration(
               hintText: "Titre de l'évènement",
               hintStyle: TextStyle(
@@ -147,51 +156,23 @@ class _EventAddPageState extends State<EventAddPage> {
               ),
             ),
           ),
-          GestureDetector(
-            onTap: () {
-              // DatePicker.showTimePicker(
-              //   context,
-              //   showTitleActions: true,
-              //   locale: LocaleType.fr,
-              //   showSecondsColumn: false,
-              // );
-              print("test");
+          Padding(padding: EdgeInsets.only(bottom: _screenHeight * 0.01)),
+          TextField(
+            controller: descriptionTFC,
+            minLines: 1,
+            maxLines: null,
+            onChanged: (_) => {
+              setState(() {
+                spaceInput = 0;
+              })
             },
-            child: Container(
-              alignment: Alignment.centerLeft,
-              child: Row(
-                children: <Widget>[
-                  Container(
-                    margin:
-                        EdgeInsets.symmetric(vertical: _screenHeight * 0.05),
-                    padding: EdgeInsets.only(bottom: _screenHeight * 0.01),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          color: Colors.grey[500],
-                          width: 1,
-                        ),
-                      ),
-                    ),
-                    child: CustomText(
-                      text: "Heure de l'évènement : ",
-                      fontColor: FontColor.grey,
-                      fontSize: FontSize.md,
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      alignment: Alignment.center,
-                      margin:
-                          EdgeInsets.symmetric(vertical: _screenHeight * 0.05),
-                      child: CustomText(
-                        text: "____ : ____",
-                        fontColor: FontColor.grey,
-                        fontSize: FontSize.md,
-                      ),
-                    ),
-                  ),
-                ],
+            decoration: InputDecoration(
+              contentPadding:
+                  EdgeInsets.only(bottom: _screenHeight * spaceInput),
+              hintText: "Description de l'activité",
+              hintStyle: TextStyle(
+                fontStyle: FontStyle.italic,
+                color: Colors.grey[500],
               ),
             ),
           ),

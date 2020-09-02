@@ -3,6 +3,7 @@ import 'package:polypeip/custom_icons/font_awesome_icons.dart';
 import 'package:polypeip/custom_widgets/CustomBackAppBar.dart';
 import 'package:polypeip/custom_widgets/CustomRoundedButton.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
+import 'package:polypeip/services/requests.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class AnnuaireAddPage extends StatefulWidget {
@@ -14,13 +15,16 @@ class _AnnuaireAddPageState extends State<AnnuaireAddPage> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
+  TextEditingController nameTFC = TextEditingController();
+  TextEditingController surnameTFC = TextEditingController();
+  TextEditingController emailTFC = TextEditingController();
+  TextEditingController telTFC = TextEditingController();
+
   double _screenHeight;
   double _screenWidth;
-
   double spaceInput = 0.1;
 
   Color blue = CustomText.textColor(FontColor.blue);
-
   Color adminColor = Color(0xFF7f8fa6);
 
   Widget buildTopContent() {
@@ -77,7 +81,14 @@ class _AnnuaireAddPageState extends State<AnnuaireAddPage> {
         fontWeight: FontWeight.bold,
         backgroundColor: blue,
         borderColor: blue,
-        onPressed: () => print('submit'),
+        onPressed: () => addContact(
+          nameTFC.text,
+          surnameTFC.text,
+          emailTFC.text,
+          telTFC.text,
+        ).then(
+          (value) => Navigator.pop(context),
+        ),
       ),
     );
   }
@@ -89,6 +100,7 @@ class _AnnuaireAddPageState extends State<AnnuaireAddPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           TextField(
+            controller: nameTFC,
             decoration: InputDecoration(
               hintText: "Nom",
               hintStyle: TextStyle(
@@ -99,6 +111,7 @@ class _AnnuaireAddPageState extends State<AnnuaireAddPage> {
           ),
           Padding(padding: EdgeInsets.only(bottom: _screenHeight * 0.02)),
           TextField(
+            controller: surnameTFC,
             decoration: InputDecoration(
               hintText: "Prénom",
               hintStyle: TextStyle(
@@ -109,6 +122,7 @@ class _AnnuaireAddPageState extends State<AnnuaireAddPage> {
           ),
           Padding(padding: EdgeInsets.only(bottom: _screenHeight * 0.05)),
           TextField(
+            controller: emailTFC,
             decoration: InputDecoration(
               hintText: "Adresse Email",
               hintStyle: TextStyle(
@@ -119,6 +133,7 @@ class _AnnuaireAddPageState extends State<AnnuaireAddPage> {
           ),
           Padding(padding: EdgeInsets.only(bottom: _screenHeight * 0.02)),
           TextField(
+            controller: telTFC,
             decoration: InputDecoration(
               hintText: "Téléphone",
               hintStyle: TextStyle(

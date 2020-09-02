@@ -6,6 +6,7 @@ import 'package:polypeip/custom_icons/font_awesome_icons.dart';
 import 'package:polypeip/custom_widgets/CustomBackAppBar.dart';
 import 'package:polypeip/custom_widgets/CustomRoundedButton.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
+import 'package:polypeip/services/requests.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class GoodiesAddPage extends StatefulWidget {
@@ -19,13 +20,15 @@ class _GoodiesAddPageState extends State<GoodiesAddPage> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
+  TextEditingController nameTFC = TextEditingController();
+  TextEditingController descriptionTFC = TextEditingController();
+  TextEditingController priceTFC = TextEditingController();
+
   double _screenHeight;
   double _screenWidth;
-
   double spaceInput = 0.1;
 
   Color blue = CustomText.textColor(FontColor.blue);
-
   Color adminColor = Color(0xFF7f8fa6);
 
   Future imageCamera() async {
@@ -178,7 +181,14 @@ class _GoodiesAddPageState extends State<GoodiesAddPage> {
         fontWeight: FontWeight.bold,
         backgroundColor: blue,
         borderColor: blue,
-        onPressed: () => print('submit'),
+        onPressed: () => addGoodie(
+          nameTFC.text,
+          descriptionTFC.text,
+          priceTFC.text,
+          _image,
+        ).then(
+          (value) => Navigator.pop(context),
+        ),
       ),
     );
   }
@@ -190,6 +200,7 @@ class _GoodiesAddPageState extends State<GoodiesAddPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           TextField(
+            controller: nameTFC,
             decoration: InputDecoration(
               hintText: "Titre du produit",
               hintStyle: TextStyle(
@@ -200,6 +211,7 @@ class _GoodiesAddPageState extends State<GoodiesAddPage> {
           ),
           Padding(padding: EdgeInsets.only(bottom: _screenHeight * 0.05)),
           TextField(
+            controller: descriptionTFC,
             minLines: 1,
             maxLines: null,
             onChanged: (_) => {
@@ -225,6 +237,7 @@ class _GoodiesAddPageState extends State<GoodiesAddPage> {
                 Container(
                   width: _screenWidth * 0.4,
                   child: TextField(
+                    controller: priceTFC,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       hintText: "Prix du produit",

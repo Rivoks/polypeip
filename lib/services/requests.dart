@@ -1,9 +1,11 @@
+import 'dart:io';
 import 'package:polypeip/models/Contact.dart';
 import 'package:polypeip/models/Event.dart';
 import 'package:polypeip/models/Goodie.dart';
 import 'package:polypeip/models/Message.dart';
 import 'package:polypeip/models/Post.dart';
 import 'package:polypeip/models/SocialNetwork.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'request.dart';
 
 // POSTS
@@ -11,11 +13,25 @@ Future<List<Post>> getPosts() async {
   List<Post> posts;
 
   await request(RequestType.get, '/posts/').then((res) {
+    print(res['data']['posts']);
     posts = (res['data']['posts'] as List<dynamic>)
         .map((post) => Post.fromJson(post))
         .toList();
   });
 
+  return posts;
+}
+
+Future<List<Post>> getPoststmp() async {
+  List<Map<String, dynamic>> postsTmp = [
+    {
+      "clé": "valeur",
+    }
+  ];
+
+  List<Post> posts = [];
+
+  posts = postsTmp.map((e) => Post()).toList();
   return posts;
 }
 
@@ -29,13 +45,58 @@ Future<Post> getPost(String id) async {
   return post;
 }
 
-Future addPost() async {}
+Future addPost(
+  String name,
+  String content,
+  File img,
+) async {
+  await request(RequestType.post, '/posts/', body: {
+    "name": name,
+    "content": content,
+  });
+}
 
-Future ratePost() async {}
+// TODO
+Future reactPost(String id, String action) async {
+  await request(
+    RequestType.post,
+    '/posts/' + action + '/' + id,
+  ).then((res) {
+    print(res);
+  });
+}
 
-Future editPost() async {}
+Future editPost(
+  String id,
+  String name,
+  String content,
+  File img,
+) async {
+  Map<String, dynamic> body = {
+    "name": name,
+    "content": content,
+  };
+  if (img != null) {
+    body["img"] = img;
+  }
 
-Future removePost() async {}
+  await request(
+    RequestType.put,
+    '/posts/' + id,
+    body: body,
+  ).then((res) {
+    print(res);
+  });
+}
+
+Future removePost(String id) async {
+  await request(
+    RequestType.delete,
+    '/posts/' + id,
+  ).then((res) {
+    print(res);
+  });
+}
 
 // EVENTS
 Future<List<Event>> getEvents() async {
@@ -60,14 +121,48 @@ Future<Event> getEvent(String id, bool isOld) async {
   return event;
 }
 
-Future addEvent() async {}
+Future addEvent(
+  String name,
+  String description,
+) async {
+  await request(RequestType.post, '/event/', body: {
+    "name": name,
+    "description": description,
+  });
+}
 
-Future editEvent() async {}
+Future editEvent(
+  String id,
+  String name,
+  String description,
+) async {
+  Map<String, dynamic> body = {
+    "name": name,
+    "description": description,
+  };
 
-Future removeEvent() async {}
+  await request(
+    RequestType.put,
+    '/event/' + id,
+    body: body,
+  ).then((res) {
+    print(res);
+  });
+}
 
+Future removeEvent(String id) async {
+  await request(
+    RequestType.delete,
+    '/event/' + id,
+  ).then((res) {
+    print(res);
+  });
+}
+
+// TODO
 Future rateEvent() async {}
 
+// TODO
 Future commentEvent() async {}
 
 // MESSAGES
@@ -83,11 +178,26 @@ Future<List<Message>> getMessages() async {
   return messages;
 }
 
+// TODO
 Future sendMessage() async {}
 
 // INFOS
 /* annuary */
-Future getContacts() async {
+Future addContact(
+  String name,
+  String surname,
+  String email,
+  String tel,
+) async {
+  await request(RequestType.post, '/contact/', body: {
+    "name": name,
+    "surname": surname,
+    "email": email,
+    "tel": tel,
+  });
+}
+
+Future<List<Contact>> getContacts() async {
   List<Contact> contacts;
 
   await request(RequestType.get, '/contact/').then((res) {
@@ -100,12 +210,40 @@ Future getContacts() async {
   return contacts;
 }
 
-Future editContact() async {}
+Future editContact(
+  String id,
+  String name,
+  String surname,
+  String email,
+  String tel,
+) async {
+  Map<String, dynamic> body = {
+    "name": name,
+    "surname": surname,
+    "email": email,
+    "tel": tel,
+  };
 
-Future removeContact() async {}
+  await request(
+    RequestType.put,
+    '/contact/' + id,
+    body: body,
+  ).then((res) {
+    print(res);
+  });
+}
+
+Future removeContact(String id) async {
+  await request(
+    RequestType.delete,
+    '/contact/' + id,
+  ).then((res) {
+    print(res);
+  });
+}
 
 /* social network */
-Future getSocialNetworks() async {
+Future<List<SocialNetwork>> getSocialNetworks() async {
   List<SocialNetwork> socialNetworks;
 
   await request(RequestType.get, '/social/').then((res) {
@@ -117,19 +255,50 @@ Future getSocialNetworks() async {
   return socialNetworks;
 }
 
-Future editSocialNetworks() async {}
+Future addSocialNetwork(
+  String socialNetwork,
+  String username,
+  String url,
+) async {
+  await request(RequestType.post, '/social/', body: {
+    "socialNetwork": socialNetwork,
+    "username": username,
+    "url": url,
+  });
+}
 
-Future removeSocialNetworks() async {}
+Future editSocialNetworks(
+  String id,
+  String socialNetwork,
+  String username,
+  String url,
+) async {
+  Map<String, dynamic> body = {
+    "socialNetwork": socialNetwork,
+    "username": username,
+    "url": url,
+  };
 
-/* links */
-Future getLinks() async {}
+  await request(
+    RequestType.put,
+    '/social/' + id,
+    body: body,
+  ).then((res) {
+    print(res);
+  });
+}
 
-Future editLink() async {}
-
-Future removeLink() async {}
+Future removeSocialNetworks(String id) async {
+  await request(
+    RequestType.delete,
+    '/social/' + id,
+  ).then((res) {
+    print(res);
+  });
+}
 
 /* goodies */
-Future getGoodies() async {
+Future<List<Goodie>> getGoodies() async {
   List<Goodie> goodies;
 
   await request(RequestType.get, '/goodie/').then((res) {
@@ -141,26 +310,73 @@ Future getGoodies() async {
   return goodies;
 }
 
-Future addGoodie() async {}
+Future addGoodie(
+  String name,
+  String description,
+  String price,
+  File img,
+) async {
+  var tmp = await request(RequestType.post, '/goodie', body: {
+    "name": name,
+    "description": description,
+    "price": price,
+  });
+  print(tmp);
+}
 
-Future editGoodie() async {}
+Future editGoodie(
+  String id,
+  String name,
+  String description,
+  String price,
+  File img,
+) async {
+  Map<String, dynamic> body = {
+    "name": name,
+    "description": description,
+    "price": price,
+  };
 
-Future removeGoodie() async {}
+  await request(
+    RequestType.put,
+    '/goodie/' + id,
+    body: body,
+  ).then((res) {
+    print(res);
+  });
+}
+
+Future removeGoodie(String id) async {
+  await request(
+    RequestType.delete,
+    '/goodie/' + id,
+  ).then((res) {
+    print(res);
+  });
+}
 
 /* plan & edt */
+// TODO
 Future editPlan() async {}
 
+// TODO
 Future addEdt() async {}
 
+// TODO
 Future editEdt() async {}
 
+// TODO
 Future removeEdt() async {}
 
 // SETTINGS
+// TODO
 Future getNotificationStatus() async {}
 
+// TODO
 Future setNotificationStatus() async {}
 
+// TODO
 Future getSupport() async {}
 
+// TODO
 Future getAppVersion() async {}

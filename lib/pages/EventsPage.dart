@@ -55,7 +55,7 @@ class _EventsPageState extends State<EventsPage> {
     getEvents().then((events) {
       events.forEach((event) {
         setState(() {
-          if (event.date.isBefore(DateTime.now()))
+          if (!event.date.isBefore(DateTime.now()))
             oldEvents.add(event);
           else
             newEvents.add(event);

@@ -3,12 +3,14 @@ import 'package:polypeip/custom_icons/font_awesome_icons.dart';
 import 'package:polypeip/custom_widgets/CustomBackAppBar.dart';
 import 'package:polypeip/custom_widgets/CustomRoundedButton.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
+import 'package:polypeip/models/Contact.dart';
+import 'package:polypeip/services/requests.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class AnnuaireEditPage extends StatefulWidget {
-  AnnuaireEditPage({@required this.staffId});
+  AnnuaireEditPage({@required this.contact});
 
-  final String staffId;
+  final Contact contact;
 
   @override
   _AnnuaireEditPageState createState() => _AnnuaireEditPageState();
@@ -18,14 +20,27 @@ class _AnnuaireEditPageState extends State<AnnuaireEditPage> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
+  TextEditingController nameTFC = TextEditingController();
+  TextEditingController surnameTFC = TextEditingController();
+  TextEditingController emailTFC = TextEditingController();
+  TextEditingController telTFC = TextEditingController();
+
   double _screenHeight;
   double _screenWidth;
-
   double spaceInput = 0.1;
 
   Color blue = CustomText.textColor(FontColor.blue);
-
   Color adminColor = Color(0xFF7f8fa6);
+
+  @override
+  void initState() {
+    super.initState();
+
+    nameTFC.text = widget.contact.name;
+    surnameTFC.text = widget.contact.surname;
+    emailTFC.text = widget.contact.email;
+    telTFC.text = widget.contact.tel;
+  }
 
   Widget buildTopContent() {
     return Container(
@@ -81,7 +96,15 @@ class _AnnuaireEditPageState extends State<AnnuaireEditPage> {
         fontWeight: FontWeight.bold,
         backgroundColor: blue,
         borderColor: blue,
-        onPressed: () => print('submit'),
+        onPressed: () => editContact(
+          widget.contact.id,
+          nameTFC.text,
+          surnameTFC.text,
+          emailTFC.text,
+          telTFC.text,
+        ).then(
+          (value) => Navigator.pop(context),
+        ),
       ),
     );
   }
@@ -93,6 +116,7 @@ class _AnnuaireEditPageState extends State<AnnuaireEditPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           TextField(
+            controller: nameTFC,
             decoration: InputDecoration(
               hintText: "Nom",
               hintStyle: TextStyle(
@@ -103,6 +127,7 @@ class _AnnuaireEditPageState extends State<AnnuaireEditPage> {
           ),
           Padding(padding: EdgeInsets.only(bottom: _screenHeight * 0.02)),
           TextField(
+            controller: surnameTFC,
             decoration: InputDecoration(
               hintText: "Prénom",
               hintStyle: TextStyle(
@@ -113,6 +138,7 @@ class _AnnuaireEditPageState extends State<AnnuaireEditPage> {
           ),
           Padding(padding: EdgeInsets.only(bottom: _screenHeight * 0.05)),
           TextField(
+            controller: emailTFC,
             decoration: InputDecoration(
               hintText: "Adresse Email",
               hintStyle: TextStyle(
@@ -123,6 +149,7 @@ class _AnnuaireEditPageState extends State<AnnuaireEditPage> {
           ),
           Padding(padding: EdgeInsets.only(bottom: _screenHeight * 0.02)),
           TextField(
+            controller: telTFC,
             decoration: InputDecoration(
               hintText: "Téléphone",
               hintStyle: TextStyle(

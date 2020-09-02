@@ -124,40 +124,36 @@ class _HomePageState extends State<HomePage> {
             itemCount: posts.length,
             itemBuilder: (context, index) {
               return Container(
-                  margin:
-                      index != 0 ? null : EdgeInsets.only(top: height * 0.03),
-                  padding: EdgeInsets.symmetric(horizontal: width * 0.08),
-                  width: width,
-                  color: Colors.white,
-                  child: Container(
-                      margin: EdgeInsets.only(bottom: height * 0.04),
-                      child: CustomNews(
-                          heightScreen: height,
-                          widthScreen: width,
-                          newsId: posts[index].id,
-                          newsTitle: posts[index].name,
-                          newsDate: posts[index].date,
-                          newsDescription: posts[index].content,
-                          newsImage: posts[index].img)));
+                margin: index != 0 ? null : EdgeInsets.only(top: height * 0.03),
+                padding: EdgeInsets.symmetric(horizontal: width * 0.08),
+                width: width,
+                color: Colors.white,
+                child: Container(
+                  margin: EdgeInsets.only(bottom: height * 0.04),
+                  child: CustomNews(
+                    heightScreen: height,
+                    widthScreen: width,
+                    post: posts[index],
+                  ),
+                ),
+              );
             }),
         ListView.builder(
             itemCount: posts.length,
             itemBuilder: (context, index) {
               return Container(
-                  margin:
-                      index != 0 ? null : EdgeInsets.only(top: height * 0.03),
-                  width: width,
-                  color: Colors.white,
-                  child: Container(
-                      margin: EdgeInsets.only(bottom: height * 0.03),
-                      child: CustomNewsAlt(
-                          heightScreen: height,
-                          widthScreen: width,
-                          newsId: posts[index].id,
-                          newsTitle: posts[index].name,
-                          newsDate: posts[index].date,
-                          newsDescription: posts[index].content,
-                          newsImage: posts[index].img)));
+                margin: index != 0 ? null : EdgeInsets.only(top: height * 0.03),
+                width: width,
+                color: Colors.white,
+                child: Container(
+                  margin: EdgeInsets.only(bottom: height * 0.03),
+                  child: CustomNewsAlt(
+                    heightScreen: height,
+                    widthScreen: width,
+                    post: posts[index],
+                  ),
+                ),
+              );
             })
       ],
     );

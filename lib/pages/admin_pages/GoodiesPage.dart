@@ -1,9 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:polypeip/custom_icons/font_awesome_icons.dart';
 import 'package:polypeip/custom_widgets/CustomBackAppBar.dart';
 import 'package:polypeip/custom_widgets/CustomRoundedButton.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
+import 'package:polypeip/models/Goodie.dart';
+import 'package:polypeip/pages/admin_pages/GoodiesEditPage.dart';
+import 'package:polypeip/services/requests.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class GoodiesPage extends StatefulWidget {
@@ -15,46 +19,17 @@ class _GoodiesPageState extends State<GoodiesPage> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
-  List<Map<String, String>> goodies = [
-    {
-      "_id": "4za64da94az",
-      "imgURL":
-          "http://www.leparisien.fr/resizer/xZzzRB8GLppx_dJSx7UZBfqI-Ik=/932x582/arc-anglerfish-eu-central-1-prod-leparisien.s3.amazonaws.com/public/O32M647E2KFNO2XYOPUINMLEY4.jpg",
-      "title": "Goodies 1",
-      "description":
-          "Courte description d'un produit goodies s'arrêtant sur deux lignes grâce à un overflow ellipsis et un maxLines de 2",
-      "price": "19.99",
-    },
-    {
-      "_id": "4za64da94az",
-      "imgURL":
-          "http://www.leparisien.fr/resizer/xZzzRB8GLppx_dJSx7UZBfqI-Ik=/932x582/arc-anglerfish-eu-central-1-prod-leparisien.s3.amazonaws.com/public/O32M647E2KFNO2XYOPUINMLEY4.jpg",
-      "title": "Goodies 1",
-      "description":
-          "Courte description d'un produit goodies s'arrêtant sur deux lignes grâce à un overflow ellipsis et un maxLines de 2",
-      "price": "19.99",
-    },
-    {
-      "_id": "4za64da94az",
-      "imgURL":
-          "http://www.leparisien.fr/resizer/xZzzRB8GLppx_dJSx7UZBfqI-Ik=/932x582/arc-anglerfish-eu-central-1-prod-leparisien.s3.amazonaws.com/public/O32M647E2KFNO2XYOPUINMLEY4.jpg",
-      "title": "Goodies 1",
-      "description":
-          "Courte description d'un produit goodies s'arrêtant sur deux lignes grâce à un overflow ellipsis et un maxLines de 2",
-      "price": "19.99",
-    },
-    {
-      "_id": "4za64da94az",
-      "imgURL":
-          "http://www.leparisien.fr/resizer/xZzzRB8GLppx_dJSx7UZBfqI-Ik=/932x582/arc-anglerfish-eu-central-1-prod-leparisien.s3.amazonaws.com/public/O32M647E2KFNO2XYOPUINMLEY4.jpg",
-      "title": "Goodies 1",
-      "description":
-          "Courte description d'un produit goodies s'arrêtant sur deux lignes grâce à un overflow ellipsis et un maxLines de 2",
-      "price": "19.99",
-    },
-  ];
-
+  List<Goodie> goodies;
   Color adminColor = Color(0xFF7f8fa6);
+
+  @override
+  void initState() {
+    super.initState();
+
+    getGoodies().then((value) {
+      setState(() => goodies = value);
+    });
+  }
 
   Widget buildEditForm(height, width, index) {
     return Container(
@@ -87,7 +62,7 @@ class _GoodiesPageState extends State<GoodiesPage> {
                 width: width * 0.22,
                 height: height * 0.15,
                 fit: BoxFit.cover,
-                imageUrl: goodies[index]['imgURL'],
+                imageUrl: goodies[index].img,
                 placeholder: (context, url) {
                   return Container(
                       width: width * 0.22,
@@ -109,13 +84,13 @@ class _GoodiesPageState extends State<GoodiesPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   CustomText(
-                    text: goodies[index]['title'],
+                    text: goodies[index].name,
                     fontColor: FontColor.black,
                     fontSize: FontSize.md,
                     fontWeight: FontWeight.bold,
                   ),
                   CustomText(
-                    text: goodies[index]['description'],
+                    text: goodies[index].description,
                     fontColor: FontColor.darkGrey,
                     fontSize: FontSize.sm,
                     fontWeight: FontWeight.w400,
@@ -126,7 +101,7 @@ class _GoodiesPageState extends State<GoodiesPage> {
                     padding: EdgeInsets.only(bottom: height * 0.02),
                   ),
                   CustomText(
-                    text: goodies[index]['price'] + '€',
+                    text: goodies[index].price.toString() + '€',
                     fontColor: FontColor.black,
                     fontSize: FontSize.md,
                     fontWeight: FontWeight.bold,
@@ -139,15 +114,24 @@ class _GoodiesPageState extends State<GoodiesPage> {
                 children: <Widget>[
                   GestureDetector(
                     child: Icon(Icons.edit, color: Colors.grey[800]),
-                    onTap: () => {
-                      Navigator.pushNamed(context, "/edit/editGoodies",
-                          arguments: {"goodiesId": goodies[index]['_id']})
-                    },
+                    onTap: () => Navigator.push(
+                      context,
+                      PageTransition(
+                        child: GoodiesEditPage(
+                          goodie: goodies[index],
+                        ),
+                        type: PageTransitionType.downToUp,
+                      ),
+                    ),
                   ),
                   Padding(padding: EdgeInsets.only(right: width * 0.012)),
                   GestureDetector(
                     child: Icon(Icons.delete, color: Colors.grey[800]),
-                    onTap: () => print("delete"),
+                    onTap: () => removeGoodie(goodies[index].id).then(
+                      (value) => setState(
+                        () => goodies.removeAt(index),
+                      ),
+                    ),
                   )
                 ],
               ),
@@ -226,7 +210,7 @@ class _GoodiesPageState extends State<GoodiesPage> {
           child: ListView.builder(
             shrinkWrap: true,
             physics: ClampingScrollPhysics(),
-            itemCount: goodies.length,
+            itemCount: goodies != null ? goodies.length : 0,
             itemBuilder: (context, index) {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -245,7 +229,7 @@ class _GoodiesPageState extends State<GoodiesPage> {
                       : Container(),
                   Padding(padding: EdgeInsets.only(top: _screenHeight * 0.03)),
                   buildEditForm(_screenHeight, _screenWidth, index),
-                  (index == goodies.length - 1)
+                  (index == (goodies != null ? goodies.length - 1 : 0))
                       ? Padding(
                           padding: EdgeInsets.only(top: _screenHeight * 0.05))
                       : Container(),

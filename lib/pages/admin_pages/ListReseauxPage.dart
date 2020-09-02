@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:polypeip/custom_icons/font_awesome_icons.dart';
 import 'package:polypeip/custom_widgets/CustomBackAppBar.dart';
 import 'package:polypeip/custom_widgets/CustomRoundedButton.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
+import 'package:polypeip/models/SocialNetwork.dart';
+import 'package:polypeip/pages/admin_pages/ReseauxEditPage.dart';
+import 'package:polypeip/services/requests.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ListReseauxPage extends StatefulWidget {
@@ -14,22 +18,18 @@ class _ListReseauxPageState extends State<ListReseauxPage> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
-  List<Map<String, String>> socialMedias = [
-    {
-      "id": "64ad4z9a4d",
-      "name": "Discord",
-      "mediaName": "PolyServ",
-      "link": "https://www.discordapp.com",
-    },
-    {
-      "id": "64ad4z9a4d",
-      "name": "Snapchat",
-      "mediaName": "polypeip.sc2020",
-      "link": "https://www.snapchat.com",
-    },
-  ];
+  List<SocialNetwork> socialNetworks;
 
   Color adminColor = Color(0xFF7f8fa6);
+
+  @override
+  void initState() {
+    super.initState();
+
+    getSocialNetworks().then((value) {
+      setState(() => socialNetworks = value);
+    });
+  }
 
   Widget buildEditForm(height, width, index) {
     return Container(
@@ -63,20 +63,20 @@ class _ListReseauxPageState extends State<ListReseauxPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   CustomText(
-                    text: socialMedias[index]['name'],
+                    text: socialNetworks[index].socialNetwork,
                     fontColor: FontColor.black,
                     fontSize: FontSize.md,
                     fontWeight: FontWeight.bold,
                   ),
                   Padding(padding: EdgeInsets.only(bottom: height * 0.01)),
                   CustomText(
-                    text: socialMedias[index]['mediaName'],
+                    text: socialNetworks[index].username,
                     fontColor: FontColor.black,
                     fontSize: FontSize.sm,
                     fontWeight: FontWeight.bold,
                   ),
                   CustomText(
-                    text: socialMedias[index]['link'],
+                    text: socialNetworks[index].url,
                     fontColor: FontColor.darkGrey,
                     fontSize: FontSize.sm,
                     fontWeight: FontWeight.w400,
@@ -89,15 +89,25 @@ class _ListReseauxPageState extends State<ListReseauxPage> {
                 children: <Widget>[
                   GestureDetector(
                     child: Icon(Icons.edit, color: Colors.grey[800]),
-                    onTap: () => {
-                      Navigator.pushNamed(context, "/edit/editReseaux",
-                          arguments: {"reseauxId": socialMedias[index]['_id']})
-                    },
+                    onTap: () => Navigator.push(
+                      context,
+                      PageTransition(
+                        child: ReseauxEditPage(
+                          socialNetwork: socialNetworks[index],
+                        ),
+                        type: PageTransitionType.downToUp,
+                      ),
+                    ),
                   ),
                   Padding(padding: EdgeInsets.only(right: width * 0.05)),
                   GestureDetector(
                     child: Icon(Icons.delete, color: Colors.grey[800]),
-                    onTap: () => print("delete"),
+                    onTap: () =>
+                        removeSocialNetworks(socialNetworks[index].id).then(
+                      (value) => setState(
+                        () => socialNetworks.removeAt(index),
+                      ),
+                    ),
                   )
                 ],
               ),
@@ -176,7 +186,7 @@ class _ListReseauxPageState extends State<ListReseauxPage> {
           child: ListView.builder(
             shrinkWrap: true,
             physics: ClampingScrollPhysics(),
-            itemCount: socialMedias.length,
+            itemCount: socialNetworks.length,
             itemBuilder: (context, index) {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -195,7 +205,7 @@ class _ListReseauxPageState extends State<ListReseauxPage> {
                       : Container(),
                   Padding(padding: EdgeInsets.only(top: _screenHeight * 0.03)),
                   buildEditForm(_screenHeight, _screenWidth, index),
-                  (index == socialMedias.length - 1)
+                  (index == socialNetworks.length - 1)
                       ? Padding(
                           padding: EdgeInsets.only(top: _screenHeight * 0.05))
                       : Container(),

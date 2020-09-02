@@ -34,12 +34,6 @@ class _InfoAnnuairePageState extends State<InfoAnnuairePage> {
     setState(() => socialNetworks = tmp);
   }
 
-  Future setLinks() async {
-    if (links != null) return;
-    List<Link> tmp = await getLinks();
-    setState(() => links = tmp);
-  }
-
   Widget buildParamsContainer(height, width, textParams, last) {
     return GestureDetector(
       child: Container(
@@ -173,6 +167,7 @@ class _InfoAnnuairePageState extends State<InfoAnnuairePage> {
           itemCount: socialNetworks == null ? 0 : socialNetworks.length,
           itemBuilder: (context, index) {
             SocialNetwork social = socialNetworks[index];
+
             return singleAreaSetting(
               height,
               width,
@@ -184,7 +179,7 @@ class _InfoAnnuairePageState extends State<InfoAnnuairePage> {
                 children: <Widget>[
                   GestureDetector(
                     child: CustomText(
-                      text: social.value,
+                      text: social.username,
                       fontColor: FontColor.darkGrey,
                       fontSize: FontSize.md,
                       fontWeight: FontWeight.bold,
@@ -194,32 +189,6 @@ class _InfoAnnuairePageState extends State<InfoAnnuairePage> {
                     },
                   ),
                 ],
-              ),
-            );
-          },
-        );
-        break;
-      case "Liens utiles":
-        setLinks();
-        return ListView.builder(
-          shrinkWrap: true,
-          physics: ClampingScrollPhysics(),
-          itemCount: links != null ? links.length : 0,
-          itemBuilder: (context, index) {
-            Link link = links[index];
-            return singleAreaSetting(
-              height,
-              width,
-              link.name,
-              false,
-              0.7,
-              GestureDetector(
-                child: Icon(
-                  FontAwesome.folder_open,
-                  size: height * 0.02,
-                  color: CustomText.textColor(FontColor.blue),
-                ),
-                onTap: () => {},
               ),
             );
           },

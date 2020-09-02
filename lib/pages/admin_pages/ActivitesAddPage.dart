@@ -7,6 +7,7 @@ import 'package:polypeip/custom_icons/font_awesome_icons.dart';
 import 'package:polypeip/custom_widgets/CustomBackAppBar.dart';
 import 'package:polypeip/custom_widgets/CustomRoundedButton.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
+import 'package:polypeip/services/requests.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ActivitesAddPage extends StatefulWidget {
@@ -16,6 +17,8 @@ class ActivitesAddPage extends StatefulWidget {
 
 class _ActivitesAddPageState extends State<ActivitesAddPage> {
   File _image;
+  TextEditingController nameTFC = TextEditingController();
+  TextEditingController contentTFC = TextEditingController();
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -179,7 +182,13 @@ class _ActivitesAddPageState extends State<ActivitesAddPage> {
         fontWeight: FontWeight.bold,
         backgroundColor: blue,
         borderColor: blue,
-        onPressed: () => print('submit'),
+        onPressed: () => addPost(
+          nameTFC.text,
+          contentTFC.text,
+          _image,
+        ).then(
+          (value) => Navigator.pop(context),
+        ),
       ),
     );
   }
@@ -191,6 +200,7 @@ class _ActivitesAddPageState extends State<ActivitesAddPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           TextField(
+            controller: nameTFC,
             decoration: InputDecoration(
               hintText: "Titre de l'activité",
               hintStyle: TextStyle(
@@ -251,6 +261,7 @@ class _ActivitesAddPageState extends State<ActivitesAddPage> {
           ),
           Padding(padding: EdgeInsets.only(bottom: _screenHeight * 0.01)),
           TextField(
+            controller: contentTFC,
             minLines: 1,
             maxLines: null,
             onChanged: (_) => {

@@ -13,6 +13,9 @@ class InfoIdeaPage extends StatefulWidget {
 }
 
 class _InfoIdeaPageState extends State<InfoIdeaPage> {
+  TextEditingController ideaNameTFC = TextEditingController();
+  TextEditingController ideacontentTFC = TextEditingController();
+
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
@@ -62,6 +65,7 @@ class _InfoIdeaPageState extends State<InfoIdeaPage> {
             padding: EdgeInsets.symmetric(vertical: _screenHeight * 0.04),
           ),
           CustomTextArea(
+            controller: ideaNameTFC,
             heightScreen: _screenHeight,
             widthScreen: _screenWidth,
             inputColor: Colors.grey[800],
@@ -72,6 +76,7 @@ class _InfoIdeaPageState extends State<InfoIdeaPage> {
           ),
           Padding(padding: EdgeInsets.only(bottom: _screenHeight * 0.02)),
           CustomTextArea(
+            controller: ideacontentTFC,
             heightScreen: _screenHeight,
             widthScreen: _screenWidth,
             inputColor: Colors.grey[800],
