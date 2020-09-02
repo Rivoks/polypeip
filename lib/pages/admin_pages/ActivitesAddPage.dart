@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-// import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:polypeip/custom_icons/font_awesome_icons.dart';
 import 'package:polypeip/custom_widgets/CustomBackAppBar.dart';
@@ -186,6 +185,7 @@ class _ActivitesAddPageState extends State<ActivitesAddPage> {
           nameTFC.text,
           contentTFC.text,
           _image,
+          context: context,
         ).then(
           (value) => Navigator.pop(context),
         ),

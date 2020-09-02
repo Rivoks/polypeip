@@ -221,12 +221,19 @@ class _PostPageState extends State<PostPage> {
                 labelStyle: TextStyle(
                     fontSize: _screenHeight * 0.02,
                     fontWeight: FontWeight.bold),
-                onTap: () => reactPost(post.id, "dislike").then(
+                onTap: () => reactPost(
+                  post.id,
+                  "dislike",
+                  context: context,
+                ).then(
                   (_) {
                     setState(() {
                       post.likeStatus = -1;
                     });
-                    getPost(post.id).then((value) {
+                    getPost(
+                      post.id,
+                      context: context,
+                    ).then((value) {
                       widget.setPost(value);
                       setState(() => post = value);
                     });
@@ -240,12 +247,19 @@ class _PostPageState extends State<PostPage> {
                 labelStyle: TextStyle(
                     fontSize: _screenHeight * 0.02,
                     fontWeight: FontWeight.bold),
-                onTap: () => reactPost(post.id, "like").then(
+                onTap: () => reactPost(
+                  post.id,
+                  "like",
+                  context: context,
+                ).then(
                   (_) {
                     setState(() {
                       post.likeStatus = 1;
                     });
-                    getPost(post.id).then((value) {
+                    getPost(
+                      post.id,
+                      context: context,
+                    ).then((value) {
                       widget.setPost(value);
                       setState(() => post = value);
                     });

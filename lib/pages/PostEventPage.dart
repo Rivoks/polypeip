@@ -31,7 +31,7 @@ class _PostEventPageState extends State<PostEventPage> {
   void initState() {
     super.initState();
 
-    getEvent(widget.eventId, true).then((value) {
+    getEvent(widget.eventId, true, context: context).then((value) {
       setState(() => event = value);
     });
   }

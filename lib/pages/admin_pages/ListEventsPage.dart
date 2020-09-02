@@ -25,7 +25,7 @@ class _ListEventsPageState extends State<ListEventsPage> {
   void initState() {
     super.initState();
 
-    getEvents().then((value) {
+    getEvents(context: context).then((value) {
       setState(() => events = value);
     });
   }
@@ -111,7 +111,10 @@ class _ListEventsPageState extends State<ListEventsPage> {
                     Padding(padding: EdgeInsets.only(right: width * 0.05)),
                     GestureDetector(
                       child: Icon(Icons.delete, color: Colors.grey[800]),
-                      onTap: () => removeEvent(events[index].id).then(
+                      onTap: () => removeEvent(
+                        events[index].id,
+                        context: context,
+                      ).then(
                         (value) => setState(
                           () => events.removeAt(index),
                         ),

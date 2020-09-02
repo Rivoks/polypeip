@@ -1,6 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/semantics.dart';
 import 'package:polypeip/custom_widgets/CustomAppBar.dart';
 import 'package:polypeip/custom_widgets/CustomBottomBar.dart';
 import 'package:polypeip/custom_widgets/CustomNews.dart';
@@ -31,7 +30,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    getPosts().then((value) {
+    getPosts(context: context).then((value) {
       setState(() => posts = value);
     });
   }

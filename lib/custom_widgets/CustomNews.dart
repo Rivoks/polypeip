@@ -72,12 +72,15 @@ class _CustomNews extends State<CustomNews> {
         ),
       ),
       onDoubleTap: () {
-        reactPost(post.id, post.likeStatus == 1 ? "cancel-like" : "like").then(
+        reactPost(post.id, post.likeStatus == 1 ? "cancel-like" : "like",
+                context: context)
+            .then(
           (value) {
             setState(() {
               post.likeStatus = post.likeStatus == 1 ? 0 : 1;
             });
-            getPost(post.id).then((value) => setState(() => post = value));
+            getPost(post.id, context: context)
+                .then((value) => setState(() => post = value));
           },
         );
       },
@@ -182,15 +185,16 @@ class _CustomNews extends State<CustomNews> {
                           ),
                           onTap: () {
                             reactPost(
-                                    post.id,
-                                    post.likeStatus == 1
-                                        ? "cancel-like"
-                                        : "like")
-                                .then((_) {
+                              post.id,
+                              post.likeStatus == 1 ? "cancel-like" : "like",
+                              context: context,
+                            ).then((_) {
                               setState(() => post.likeStatus =
                                   post.likeStatus == 1 ? 0 : 1);
-                              getPost(post.id).then(
-                                  (value) => setState(() => post = value));
+                              getPost(
+                                post.id,
+                                context: context,
+                              ).then((value) => setState(() => post = value));
                             });
                           },
                         ),
@@ -227,18 +231,19 @@ class _CustomNews extends State<CustomNews> {
                           ),
                           onTap: () {
                             reactPost(
-                                    post.id,
-                                    post.likeStatus == -1
-                                        ? "cancel-like"
-                                        : "dislike")
-                                .then(
+                              post.id,
+                              post.likeStatus == -1 ? "cancel-like" : "dislike",
+                              context: context,
+                            ).then(
                               (_) {
                                 setState(() {
                                   post.likeStatus =
                                       post.likeStatus == -1 ? 0 : -1;
                                 });
-                                getPost(post.id).then(
-                                    (value) => setState(() => post = value));
+                                getPost(
+                                  post.id,
+                                  context: context,
+                                ).then((value) => setState(() => post = value));
                               },
                             );
                           },

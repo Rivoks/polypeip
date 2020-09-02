@@ -186,6 +186,7 @@ class _GoodiesAddPageState extends State<GoodiesAddPage> {
           descriptionTFC.text,
           priceTFC.text,
           _image,
+          context: context,
         ).then(
           (value) => Navigator.pop(context),
         ),

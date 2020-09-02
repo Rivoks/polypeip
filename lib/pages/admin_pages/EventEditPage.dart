@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:polypeip/custom_icons/font_awesome_icons.dart';
 import 'package:polypeip/custom_widgets/CustomBackAppBar.dart';
 import 'package:polypeip/custom_widgets/CustomRoundedButton.dart';
@@ -100,6 +99,7 @@ class _EventEditPageState extends State<EventEditPage> {
           widget.event.id,
           nameTFC.text,
           descriptionTFC.text,
+          context: context,
         ).then(
           (value) => Navigator.pop(context),
         ),

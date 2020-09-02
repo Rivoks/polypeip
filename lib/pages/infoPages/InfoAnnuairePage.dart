@@ -24,13 +24,13 @@ class _InfoAnnuairePageState extends State<InfoAnnuairePage> {
 
   Future setContacts() async {
     if (contacts != null) return;
-    List<Contact> tmp = await getContacts();
+    List<Contact> tmp = await getContacts(context: context);
     setState(() => contacts = tmp);
   }
 
   Future setSocailNetworks() async {
     if (socialNetworks != null) return;
-    List<SocialNetwork> tmp = await getSocialNetworks();
+    List<SocialNetwork> tmp = await getSocialNetworks(context: context);
     setState(() => socialNetworks = tmp);
   }
 

@@ -22,7 +22,7 @@ class _InfoGoodiesPageState extends State<InfoGoodiesPage> {
   void initState() {
     super.initState();
 
-    getGoodies().then((res) {
+    getGoodies(context: context).then((res) {
       setState(() => goodies = res);
     });
   }

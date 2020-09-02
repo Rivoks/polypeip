@@ -27,7 +27,7 @@ class _ActivitesPageState extends State<ActivitesPage> {
   void initState() {
     super.initState();
 
-    getPosts().then((value) {
+    getPosts(context: context).then((value) {
       setState(() => posts = value);
     });
   }
@@ -129,7 +129,10 @@ class _ActivitesPageState extends State<ActivitesPage> {
                     Padding(padding: EdgeInsets.only(right: width * 0.012)),
                     GestureDetector(
                       child: Icon(Icons.delete, color: Colors.grey[800]),
-                      onTap: () => removePost(posts[index].id).then(
+                      onTap: () => removePost(
+                        posts[index].id,
+                        context: context,
+                      ).then(
                         (value) => setState(
                           () => posts.removeAt(index),
                         ),

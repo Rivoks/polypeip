@@ -26,7 +26,7 @@ class _ListReseauxPageState extends State<ListReseauxPage> {
   void initState() {
     super.initState();
 
-    getSocialNetworks().then((value) {
+    getSocialNetworks(context: context).then((value) {
       setState(() => socialNetworks = value);
     });
   }
@@ -102,8 +102,9 @@ class _ListReseauxPageState extends State<ListReseauxPage> {
                   Padding(padding: EdgeInsets.only(right: width * 0.05)),
                   GestureDetector(
                     child: Icon(Icons.delete, color: Colors.grey[800]),
-                    onTap: () =>
-                        removeSocialNetworks(socialNetworks[index].id).then(
+                    onTap: () => removeSocialNetworks(socialNetworks[index].id,
+                            context: context)
+                        .then(
                       (value) => setState(
                         () => socialNetworks.removeAt(index),
                       ),

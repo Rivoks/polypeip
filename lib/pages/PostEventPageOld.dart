@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:polypeip/custom_widgets/CustomRate.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
 import 'package:polypeip/models/Event.dart';
@@ -35,7 +34,7 @@ class _PostEventPageOldState extends State<PostEventPageOld> {
   void initState() {
     super.initState();
 
-    getEvent(widget.eventId, false).then((value) {
+    getEvent(widget.eventId, false, context: context).then((value) {
       setState(() => event = value);
     });
   }

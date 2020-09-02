@@ -26,7 +26,7 @@ class _ListAnnuairePageState extends State<ListAnnuairePage> {
   void initState() {
     super.initState();
 
-    getContacts().then((value) {
+    getContacts(context: context).then((value) {
       setState(() => contacts = value);
     });
   }
@@ -101,7 +101,10 @@ class _ListAnnuairePageState extends State<ListAnnuairePage> {
                   Padding(padding: EdgeInsets.only(right: width * 0.05)),
                   GestureDetector(
                     child: Icon(Icons.delete, color: Colors.grey[800]),
-                    onTap: () => removeContact(contacts[index].id).then(
+                    onTap: () => removeContact(
+                      contacts[index].id,
+                      context: context,
+                    ).then(
                       (value) => setState(
                         () => contacts.removeAt(index),
                       ),

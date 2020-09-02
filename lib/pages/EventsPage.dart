@@ -52,7 +52,7 @@ class _EventsPageState extends State<EventsPage> {
   @override
   void initState() {
     super.initState();
-    getEvents().then((events) {
+    getEvents(context: context).then((events) {
       events.forEach((event) {
         setState(() {
           if (!event.date.isBefore(DateTime.now()))

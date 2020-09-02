@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:polypeip/custom_widgets/CustomRoundedButton.dart';
 import 'package:polypeip/custom_widgets/CustomTextArea.dart';
+import 'package:polypeip/services/request.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../custom_widgets/CustomText.dart';
 
@@ -10,47 +12,60 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  // final _formKey = GlobalKey<FormState>();
   TextEditingController emailTFC = TextEditingController();
   TextEditingController passwordTFC = TextEditingController();
+  SharedPreferences prefs;
+  bool loading = false;
+  bool error = false;
 
-// Future _signin() async {
-//     emailFocus.unfocus();
-//     psswdFocus.unfocus();
-//     if (!_formKey.currentState.validate()) return;
-//     _formKey.currentState.save();
-//     setState(() => loading = true);
+  @override
+  void initState() {
+    super.initState();
 
-//     final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+    setState(() {
+      emailTFC.text = "abbasoussama1@gmail.com";
+      passwordTFC.text = "oussams93";
+    });
+  }
 
-//     try {
-//       final device = await _firebaseMessaging.getToken();
-//       print(device);
-//       var res = await request(
-//         RequestType.post,
-//         '/authentications/login',
-//         body: {
-//           "email": email.trim(),
-//           "password": password,
-//           "deviceFCM": device
-//         },
-//       );
+  Future signin() async {
+    // emailFocus.unfocus();
+    // psswdFocus.unfocus();
+    // if (!_formKey.currentState.validate()) return;
+    // _formKey.currentState.save();
+    setState(() => loading = true);
 
-//       if (res['status'] == 401) {
-//         setState(() => error = true);
-//         return;
-//       }
-//       prefs.setString('token', res['data']['token']);
+    // final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
-//       Navigator.of(context).pushNamedAndRemoveUntil(
-//         "/",
-//         (Route<dynamic> route) => false,
-//       );
-//       setState(() => error = false);
-//     } catch (e) {
-//       setState(() => error = true);
-//     }
-//     setState(() => loading = false);
-//   }
+    try {
+      // final device = await _firebaseMessaging.getToken();
+      var res = await request(
+        RequestType.post,
+        '/authentication/login',
+        body: {
+          "email": emailTFC.text.trim(),
+          "password": passwordTFC.text,
+          // "deviceFCM": device
+        },
+      );
+      print(res);
+      if (res['status'] == 401) {
+        setState(() => error = true);
+        return;
+      }
+      prefs = await SharedPreferences.getInstance();
+      prefs.setString('token', res['data']['token']);
+
+      Navigator.pushReplacementNamed(context, "/home");
+
+      setState(() => error = false);
+    } catch (e) {
+      print(e);
+      setState(() => error = true);
+    }
+    setState(() => loading = false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +134,7 @@ class _LoginPageState extends State<LoginPage> {
                     backgroundColor: Colors.white,
                     borderColor: Colors.white,
                     onPressed: () {
-                      Navigator.pushReplacementNamed(context, "/home");
+                      signin();
                     },
                   ),
                   CustomRoundedButton(

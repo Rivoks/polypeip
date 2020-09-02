@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../custom_widgets/CustomText.dart';
 
@@ -8,12 +9,17 @@ class LaunchPage extends StatefulWidget {
 }
 
 class _LaunchPageState extends State<LaunchPage> {
+  SharedPreferences prefs;
+
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token');
       Future.delayed(const Duration(milliseconds: 1000), () {
-        Navigator.pushReplacementNamed(context, '/home');
+        Navigator.pushReplacementNamed(
+            context, token != null ? '/home' : '/login');
       });
     });
   }

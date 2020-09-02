@@ -84,6 +84,7 @@ class _EventAddPageState extends State<EventAddPage> {
         onPressed: () => addEvent(
           nameTFC.text,
           descriptionTFC.text,
+          context: context,
         ).then(
           (value) => Navigator.pop(context),
         ),

@@ -22,7 +22,7 @@ class _MessagePageState extends State<MessagePage> {
   void initState() {
     super.initState();
 
-    getMessages().then((res) {
+    getMessages(context: context).then((res) {
       setState(() => messages = res);
     });
   }

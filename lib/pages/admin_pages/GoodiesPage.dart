@@ -26,7 +26,7 @@ class _GoodiesPageState extends State<GoodiesPage> {
   void initState() {
     super.initState();
 
-    getGoodies().then((value) {
+    getGoodies(context: context).then((value) {
       setState(() => goodies = value);
     });
   }
@@ -127,7 +127,8 @@ class _GoodiesPageState extends State<GoodiesPage> {
                   Padding(padding: EdgeInsets.only(right: width * 0.012)),
                   GestureDetector(
                     child: Icon(Icons.delete, color: Colors.grey[800]),
-                    onTap: () => removeGoodie(goodies[index].id).then(
+                    onTap: () =>
+                        removeGoodie(goodies[index].id, context: context).then(
                       (value) => setState(
                         () => goodies.removeAt(index),
                       ),

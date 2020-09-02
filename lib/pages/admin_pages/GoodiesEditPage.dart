@@ -203,6 +203,7 @@ class _GoodiesEditPageState extends State<GoodiesEditPage> {
           descriptionTFC.text,
           priceTFC.text,
           _image,
+          context: context,
         ).then(
           (value) => Navigator.pop(context),
         ),
