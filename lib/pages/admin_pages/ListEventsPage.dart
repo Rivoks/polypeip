@@ -21,13 +21,16 @@ class _ListEventsPageState extends State<ListEventsPage> {
 
   List<Event> events;
 
-  @override
-  void initState() {
-    super.initState();
-
+  void setPage() {
     getEvents(context: context).then((value) {
       setState(() => events = value);
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setPage();
   }
 
   Color adminColor = Color(0xFF7f8fa6);
@@ -40,7 +43,7 @@ class _ListEventsPageState extends State<ListEventsPage> {
           child: PostEventPage(eventId: events[index].id),
           type: PageTransitionType.downToUp,
         ),
-      ),
+      ).then((value) => setPage()),
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: width * 0.05),
         child: Container(
@@ -106,7 +109,7 @@ class _ListEventsPageState extends State<ListEventsPage> {
                           ),
                           type: PageTransitionType.downToUp,
                         ),
-                      ),
+                      ).then((value) => setPage()),
                     ),
                     Padding(padding: EdgeInsets.only(right: width * 0.05)),
                     GestureDetector(
@@ -143,7 +146,8 @@ class _ListEventsPageState extends State<ListEventsPage> {
         fontWeight: FontWeight.bold,
         backgroundColor: null,
         borderColor: CustomText.textColor(FontColor.blue),
-        onPressed: () => {Navigator.pushNamed(context, "/edit/addEvent")},
+        onPressed: () => Navigator.pushNamed(context, "/edit/addEvent")
+            .then((value) => setPage()),
       ),
     );
   }

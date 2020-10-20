@@ -26,7 +26,7 @@ class Post {
         name: post['name'],
         content: post['content'],
         img: post['img'] != null
-            ? post['img']
+            ? 'http://192.168.1.128:3000/uploads/i/posts/${post["img"]}'
             : "https://static.lexpress.fr/medias_11577/w_2000,h_1120,c_fill,g_center/v1502354725/paris-vu-du-ciel-des-images-epoustouflantes-filmees-par-un-drone_5927848.jpg",
         totalLikes: post['totalLikes'],
         nbTotalLikes: post['totalLikes'],

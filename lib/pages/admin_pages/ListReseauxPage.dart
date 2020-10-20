@@ -22,13 +22,16 @@ class _ListReseauxPageState extends State<ListReseauxPage> {
 
   Color adminColor = Color(0xFF7f8fa6);
 
-  @override
-  void initState() {
-    super.initState();
-
+  void setPage() {
     getSocialNetworks(context: context).then((value) {
       setState(() => socialNetworks = value);
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setPage();
   }
 
   Widget buildEditForm(height, width, index) {
@@ -97,7 +100,7 @@ class _ListReseauxPageState extends State<ListReseauxPage> {
                         ),
                         type: PageTransitionType.downToUp,
                       ),
-                    ),
+                    ).then((value) => setPage()),
                   ),
                   Padding(padding: EdgeInsets.only(right: width * 0.05)),
                   GestureDetector(
@@ -132,7 +135,8 @@ class _ListReseauxPageState extends State<ListReseauxPage> {
         fontWeight: FontWeight.bold,
         backgroundColor: null,
         borderColor: CustomText.textColor(FontColor.blue),
-        onPressed: () => {Navigator.pushNamed(context, "/edit/addReseaux")},
+        onPressed: () => Navigator.pushNamed(context, "/edit/addReseaux")
+            .then((value) => setPage()),
       ),
     );
   }

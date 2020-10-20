@@ -132,7 +132,7 @@ Future<int> formDataRequest(String route,
   });
 
   Map<String, String> tmp = {};
-  body.forEach((key, val) => tmp[key] = jsonEncode(val));
+  body.forEach((key, val) => tmp[key] = val is String ? val : jsonEncode(val));
   imageUploadRequest.fields.addAll(tmp);
 
   try {

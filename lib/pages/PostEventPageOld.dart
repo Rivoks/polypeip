@@ -169,8 +169,13 @@ class _PostEventPageOldState extends State<PostEventPageOld> {
                                   ),
                                   CustomRate(
                                     rate: rate,
-                                    setRate: (tmpRate) =>
-                                        setState(() => rate = tmpRate),
+                                    setRate: (tmpRate) {
+                                      rateEvent(event.id, tmpRate,
+                                              context: context)
+                                          .then((value) => value == 200
+                                              ? setState(() => rate = tmpRate)
+                                              : null);
+                                    },
                                     heightScreen: _screenHeight,
                                     widthScreen: _screenWidth,
                                     size: 0.05,

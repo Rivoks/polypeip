@@ -18,6 +18,7 @@ class _ActivitesAddPageState extends State<ActivitesAddPage> {
   File _image;
   TextEditingController nameTFC = TextEditingController();
   TextEditingController contentTFC = TextEditingController();
+  ImagePicker picker = ImagePicker();
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -32,18 +33,18 @@ class _ActivitesAddPageState extends State<ActivitesAddPage> {
   Color adminColor = Color(0xFF7f8fa6);
 
   Future imageCamera() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+    var image = await picker.getImage(source: ImageSource.camera);
 
     setState(() {
-      _image = image;
+      _image = File(image.path);
     });
   }
 
   Future imageGallery() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    var image = await picker.getImage(source: ImageSource.gallery);
 
     setState(() {
-      _image = image;
+      _image = File(image.path);
     });
   }
 

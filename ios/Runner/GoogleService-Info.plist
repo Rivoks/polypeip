@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>458090077424-ia9b3haapnevqvdhnce8u4tk1ueh7ilp.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.458090077424-ia9b3haapnevqvdhnce8u4tk1ueh7ilp</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCGPTEg6rsUwEfp-5eH-52aNmoiI6kDetY</string>
+	<key>GCM_SENDER_ID</key>
+	<string>458090077424</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.kooking.app</string>
+	<key>PROJECT_ID</key>
+	<string>kooking-43edb</string>
+	<key>STORAGE_BUCKET</key>
+	<string>kooking-43edb.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:458090077424:ios:69d0320ccd2e0c8f043635</string>
+	<key>DATABASE_URL</key>
+	<string>https://kooking-43edb.firebaseio.com</string>
+</dict>
+</plist>

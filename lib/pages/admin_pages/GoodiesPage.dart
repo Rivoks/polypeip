@@ -22,13 +22,16 @@ class _GoodiesPageState extends State<GoodiesPage> {
   List<Goodie> goodies;
   Color adminColor = Color(0xFF7f8fa6);
 
-  @override
-  void initState() {
-    super.initState();
-
+  void setPage() {
     getGoodies(context: context).then((value) {
       setState(() => goodies = value);
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setPage();
   }
 
   Widget buildEditForm(height, width, index) {
@@ -122,7 +125,7 @@ class _GoodiesPageState extends State<GoodiesPage> {
                         ),
                         type: PageTransitionType.downToUp,
                       ),
-                    ),
+                    ).then((value) => setPage()),
                   ),
                   Padding(padding: EdgeInsets.only(right: width * 0.012)),
                   GestureDetector(
@@ -156,7 +159,8 @@ class _GoodiesPageState extends State<GoodiesPage> {
         fontWeight: FontWeight.bold,
         backgroundColor: null,
         borderColor: CustomText.textColor(FontColor.blue),
-        onPressed: () => {Navigator.pushNamed(context, "/edit/addGoodies")},
+        onPressed: () => Navigator.pushNamed(context, "/edit/addGoodies")
+            .then((value) => setPage()),
       ),
     );
   }

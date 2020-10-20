@@ -24,18 +24,16 @@ class _GoodiesEditPageState extends State<GoodiesEditPage> {
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-
+  ImagePicker picker = ImagePicker();
   TextEditingController nameTFC = TextEditingController();
   TextEditingController descriptionTFC = TextEditingController();
   TextEditingController priceTFC = TextEditingController();
 
   double _screenHeight;
   double _screenWidth;
-
   double spaceInput = 0.1;
 
   Color blue = CustomText.textColor(FontColor.blue);
-
   Color adminColor = Color(0xFF7f8fa6);
 
   @override
@@ -48,18 +46,18 @@ class _GoodiesEditPageState extends State<GoodiesEditPage> {
   }
 
   Future imageCamera() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+    var image = await picker.getImage(source: ImageSource.camera);
 
     setState(() {
-      _image = image;
+      _image = File(image.path);
     });
   }
 
   Future imageGallery() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    var image = await picker.getImage(source: ImageSource.gallery);
 
     setState(() {
-      _image = image;
+      _image = File(image.path);
     });
   }
 

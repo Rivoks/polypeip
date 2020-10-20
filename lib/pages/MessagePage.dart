@@ -77,17 +77,15 @@ class _MessagePageState extends State<MessagePage> {
               ),
             ],
           )),
-      onTap: () {
-        Navigator.push(
-          context,
-          PageTransition(
-            child: PostMessagePage(
-              message: msg,
-            ),
-            type: PageTransitionType.downToUp,
+      onTap: () => Navigator.push(
+        context,
+        PageTransition(
+          child: PostMessagePage(
+            message: msg,
           ),
-        );
-      },
+          type: PageTransitionType.downToUp,
+        ),
+      ),
     );
   }
 

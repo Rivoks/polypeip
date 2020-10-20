@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:polypeip/custom_icons/font_awesome_icons.dart';
 import 'package:polypeip/custom_widgets/CustomBackAppBar.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
+import 'package:polypeip/services/requests.dart';
 
 class InfoPlanPage extends StatefulWidget {
   @override
@@ -9,15 +11,41 @@ class InfoPlanPage extends StatefulWidget {
 }
 
 class _InfoPlanPageState extends State<InfoPlanPage> {
+  String plan;
+
+  @override
+  initState() {
+    super.initState();
+    getPlan().then((value) => setState(() => plan = value));
+  }
+
   Widget buildImageMap(height, width) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: width * 0.08),
-      child: Container(
-        alignment: Alignment.center,
-        child: Text("Image du plan de la fac"),
-        color: Colors.grey,
+      child: CachedNetworkImage(
+        imageUrl: plan,
         height: height * 0.6,
+        fit: BoxFit.fill,
+        placeholder: (context, url) {
+          return Container(
+            alignment: Alignment.center,
+            child: Container(
+              height: height * 0.6,
+              child: CircularProgressIndicator(
+                backgroundColor: Colors.white,
+              ),
+            ),
+            height: height * 0.6,
+            color: Colors.grey[400],
+          );
+        },
       ),
+      // Container(
+      //   alignment: Alignment.center,
+      //   child: Text("Image du plan de la fac"),
+      //   color: Colors.grey,
+      //   height: height * 0.6,
+      // ),
     );
   }
 

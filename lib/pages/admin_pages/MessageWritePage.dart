@@ -5,6 +5,7 @@ import 'package:polypeip/custom_widgets/CustomRoundedButton.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
 import 'package:polypeip/custom_widgets/CustomTextArea.dart';
 import 'package:polypeip/pages/infoPages/InfoGoodiesPage.dart';
+import 'package:polypeip/services/requests.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class MessageWritePage extends StatefulWidget {
@@ -121,7 +122,13 @@ class _MessageWritePageState extends State<MessageWritePage> {
       fontWeight: FontWeight.bold,
       backgroundColor: blue,
       borderColor: blue,
-      onPressed: () => print("submitted"),
+      onPressed: () => sendMessage(
+        subjectTFC.text,
+        messageTFC.text,
+        context: context,
+      ).then(
+        (value) => Navigator.pop(context),
+      ),
     ));
   }
 

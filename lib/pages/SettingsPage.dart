@@ -3,7 +3,9 @@ import 'package:polypeip/pages/LoginPage.dart';
 import 'package:polypeip/custom_widgets/CustomBackAppBar.dart';
 import 'package:polypeip/custom_widgets/CustomRoundedButton.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
+import 'package:polypeip/services/requests.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -14,10 +16,17 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   bool _isTapped = false;
   String _currentSettings = "";
-  bool _switchValue = true;
-
+  SharedPreferences prefs;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
+  bool isAdmin = false;
+  bool notifsActivated = false;
+
+  @override
+  void initState() {
+    super.initState();
+    setIsAdmin();
+  }
 
   _launchURL() async {
     const url = 'mailto:<contact@polypeip.fr>';
@@ -26,6 +35,14 @@ class _SettingsPageState extends State<SettingsPage> {
     } else {
       throw 'Could not launch $url';
     }
+  }
+
+  setIsAdmin() async {
+    prefs = await SharedPreferences.getInstance();
+    setState(() {
+      isAdmin = prefs.getBool("isAdmin") == true ? true : false;
+      notifsActivated = prefs.getBool("notifsActivated") == true ? true : false;
+    });
   }
 
   Widget buildParamsContainer(height, width, textParams, last) {
@@ -114,11 +131,16 @@ class _SettingsPageState extends State<SettingsPage> {
         true,
         0.68,
         Switch(
-            value: _switchValue,
+            value: notifsActivated,
             onChanged: (_) {
-              setState(() {
-                _switchValue = !_switchValue;
-              });
+              setNotifications(!notifsActivated, context: context).then(
+                (value) => value == 200
+                    ? setState(() {
+                        prefs.setBool('notifsActivated', !notifsActivated);
+                        notifsActivated = !notifsActivated;
+                      })
+                    : null,
+              );
             }),
       );
     } else if (page == "Support") {
@@ -153,25 +175,26 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
       );
     } else if (page == "Admin") {
+      if (!isAdmin) return Container();
       return Column(
         children: <Widget>[
-          singleAreaSetting(
-            height,
-            width,
-            "Activités",
-            false,
-            0.7,
-            GestureDetector(
-              child: Icon(
-                Icons.edit,
-                color: CustomText.textColor(FontColor.blue),
-                size: width * 0.055,
-              ),
-              onTap: () {
-                Navigator.pushNamed(context, "/edit/activites");
-              },
-            ),
-          ),
+          // singleAreaSetting(
+          //   height,
+          //   width,
+          //   "Activités",
+          //   false,
+          //   0.7,
+          //   GestureDetector(
+          //     child: Icon(
+          //       Icons.edit,
+          //       color: CustomText.textColor(FontColor.blue),
+          //       size: width * 0.055,
+          //     ),
+          //     onTap: () {
+          //       Navigator.pushNamed(context, "/edit/activites");
+          //     },
+          //   ),
+          // ),
           singleAreaSetting(
             height,
             width,
@@ -240,23 +263,23 @@ class _SettingsPageState extends State<SettingsPage> {
               },
             ),
           ),
-          // singleAreaSetting(
-          //   height,
-          //   width,
-          //   "Goodies",
-          //   true,
-          //   0.7,
-          //   GestureDetector(
-          //     child: Icon(
-          //       Icons.edit,
-          //       color: CustomText.textColor(FontColor.blue),
-          //       size: width * 0.055,
-          //     ),
-          //     onTap: () {
-          //       Navigator.pushNamed(context, "/edit/goodies");
-          //     },
-          //   ),
-          // ),
+          singleAreaSetting(
+            height,
+            width,
+            "Goodies",
+            true,
+            0.7,
+            GestureDetector(
+              child: Icon(
+                Icons.edit,
+                color: CustomText.textColor(FontColor.blue),
+                size: width * 0.055,
+              ),
+              onTap: () {
+                Navigator.pushNamed(context, "/edit/goodies");
+              },
+            ),
+          ),
           singleAreaSetting(
             height,
             width,

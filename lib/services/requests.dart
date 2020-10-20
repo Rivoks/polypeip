@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:polypeip/models/Contact.dart';
+import 'package:polypeip/models/Edt.dart';
 import 'package:polypeip/models/Event.dart';
 import 'package:polypeip/models/Goodie.dart';
 import 'package:polypeip/models/Message.dart';
@@ -50,6 +52,7 @@ Future<List<Post>> getPosts({context: BuildContext}) async {
   List<Post> posts;
 
   await request(RequestType.get, '/posts/').then((res) {
+    print(res);
     if (res["status"] != 200) {
       switch (res["status"]) {
         case 401:
@@ -98,12 +101,20 @@ Future<Post> getPost(String id, {context: BuildContext}) async {
 
 Future addPost(String name, String content, File img,
     {context: BuildContext}) async {
-  var res = await request(RequestType.post, '/posts/', body: {
-    "name": name,
-    "content": content,
-  });
-  if (res["status"] != 200) {
-    switch (res["status"]) {
+  var res = await formDataRequest(
+    '/posts/',
+    body: {
+      "name": name,
+      "content": content,
+    },
+    files: [
+      {"name": "img", "img": img}
+    ],
+    type: RequestType.post,
+  );
+  print(res);
+  if (res != 200) {
+    switch (res) {
       case 401:
         error401(context);
         break;
@@ -193,25 +204,25 @@ Future removePost(String id, {context: BuildContext}) async {
 Future<List<Event>> getEvents({context: BuildContext}) async {
   List<Event> events;
 
-  await request(RequestType.get, '/event/').then((res) {
-    if (res["status"] != 200) {
-      switch (res["status"]) {
-        case 401:
-          error401(context);
-          return [];
-          break;
-        case 404:
-          error404(context);
-          return [];
-          break;
-        default:
-          return [];
-      }
+  var res = await request(RequestType.get, '/event/');
+  if (res["status"] != 200) {
+    switch (res["status"]) {
+      case 401:
+        error401(context);
+        return [];
+        break;
+      case 404:
+        error404(context);
+        return [];
+        break;
+      default:
+        return [];
     }
-    events = (res['data']['events'] as List<dynamic>)
-        .map((post) => Event.fromJson(post))
-        .toList();
-  });
+  }
+  print(res['data']['events']);
+  events = (res['data']['events'] as List<dynamic>)
+      .map((post) => Event.fromJson(post))
+      .toList();
 
   return events;
 }
@@ -310,8 +321,24 @@ Future removeEvent(String id, {context: BuildContext}) async {
   });
 }
 
-// TODO
-Future rateEvent({context: BuildContext}) async {}
+Future<int> rateEvent(String _id, int rate, {context: BuildContext}) async {
+  var res = await request(RequestType.post, '/event/rate/$_id', body: {
+    "rate": rate,
+  });
+  if (res["status"] != 200) {
+    switch (res["status"]) {
+      case 401:
+        error401(context);
+        return 401;
+      case 404:
+        error404(context);
+        return 404;
+      default:
+        return 500;
+    }
+  }
+  return 200;
+}
 
 // TODO
 Future commentEvent({context: BuildContext}) async {}
@@ -320,31 +347,49 @@ Future commentEvent({context: BuildContext}) async {}
 Future<List<Message>> getMessages({context: BuildContext}) async {
   List<Message> messages;
 
-  await request(RequestType.get, '/message/').then((res) {
-    if (res["status"] != 200) {
-      switch (res["status"]) {
-        case 401:
-          error401(context);
-          return [];
-          break;
-        case 404:
-          error404(context);
-          return [];
-          break;
-        default:
-          return [];
-      }
+  var res = await request(RequestType.get, '/message/');
+
+  if (res["status"] != 200) {
+    switch (res["status"]) {
+      case 401:
+        error401(context);
+        return [];
+        break;
+      case 404:
+        error404(context);
+        return [];
+        break;
+      default:
+        return [];
     }
-    messages = (res['data']['messages'] as List<dynamic>)
-        .map((post) => Message.fromJson(post))
-        .toList();
-  });
+  }
+  print(res);
+  messages = (res['data']['messages'] as List<dynamic>)
+      .map((post) => Message.fromJson(post))
+      .toList();
 
   return messages;
 }
 
-// TODO
-Future sendMessage({context: BuildContext}) async {}
+Future sendMessage(String subject, String msg, {context: BuildContext}) async {
+  await request(RequestType.post, '/message/', body: {
+    "subject": subject,
+    "content": msg,
+  }).then((res) {
+    if (res["status"] != 200) {
+      switch (res["status"]) {
+        case 401:
+          error401(context);
+          break;
+        case 404:
+          error404(context);
+          break;
+        default:
+          return;
+      }
+    }
+  });
+}
 
 // INFOS
 /* annuary */
@@ -579,14 +624,23 @@ Future<List<Goodie>> getGoodies({context: BuildContext}) async {
 
 Future addGoodie(String name, String description, String price, File img,
     {context: BuildContext}) async {
-  var res = await request(RequestType.post, '/goodie', body: {
-    "name": name,
-    "description": description,
-    "price": price,
-  });
+  var res = await formDataRequest(
+    '/goodie/',
+    body: {
+      "name": name,
+      "description": description,
+      "price": price,
+    },
+    files: [
+      {"name": "img", "img": img}
+    ],
+    type: RequestType.post,
+  );
 
-  if (res["status"] != 200) {
-    switch (res["status"]) {
+  print(res);
+
+  if (res != 200) {
+    switch (res) {
       case 401:
         error401(context);
         break;
@@ -597,8 +651,6 @@ Future addGoodie(String name, String description, String price, File img,
         return;
     }
   }
-
-  print(res);
 }
 
 Future editGoodie(
@@ -610,13 +662,14 @@ Future editGoodie(
     "price": price,
   };
 
-  await request(
-    RequestType.put,
-    '/goodie/' + id,
-    body: body,
-  ).then((res) {
-    if (res["status"] != 200) {
-      switch (res["status"]) {
+  await formDataRequest('/goodie/$id',
+      type: RequestType.put,
+      body: body,
+      files: [
+        {"name": "img", "img": img}
+      ]).then((res) {
+    if (res != 200) {
+      switch (res) {
         case 401:
           error401(context);
           break;
@@ -653,27 +706,160 @@ Future removeGoodie(String id, {context: BuildContext}) async {
 }
 
 /* plan & edt */
-// TODO
-Future editPlan({context: BuildContext}) async {}
+Future<String> getPlan({context: BuildContext}) async {
+  var res = await request(RequestType.get, '/plan/');
 
-// TODO
-Future addEdt({context: BuildContext}) async {}
+  if (res["status"] != 200) {
+    switch (res["status"]) {
+      case 401:
+        error401(context);
+        return null;
+        break;
+      case 404:
+        error404(context);
+        return null;
+        break;
+      default:
+        return null;
+    }
+  }
 
-// TODO
-Future editEdt({context: BuildContext}) async {}
+  return 'http://192.168.1.128:3000/uploads/i/plan/${res['data']['plan']["img"]}';
+}
 
-// TODO
-Future removeEdt({context: BuildContext}) async {}
+Future editPlan(File img, {context: BuildContext}) async {
+  var res = await formDataRequest(
+    '/plan',
+    files: [
+      {"name": "img", "img": img}
+    ],
+    type: RequestType.put,
+  );
+
+  if (res != 200) {
+    switch (res) {
+      case 401:
+        error401(context);
+        break;
+      case 404:
+        error404(context);
+        break;
+      default:
+    }
+  }
+}
+
+Future<List<Edt>> getEdts({context: BuildContext}) async {
+  List<Edt> edts = [];
+
+  var res = await request(RequestType.get, '/edt/');
+
+  if (res["status"] != 200) {
+    switch (res["status"]) {
+      case 401:
+        error401(context);
+        return null;
+        break;
+      case 404:
+        error404(context);
+        return null;
+        break;
+      default:
+        return null;
+    }
+  }
+
+  edts = (res['data']['edts'] as List<dynamic>)
+      .map((edt) => Edt.fromJson(edt))
+      .toList();
+
+  return edts;
+}
+
+Future addEdt(String name, File img, {context: BuildContext}) async {
+  var res = await formDataRequest(
+    '/edt',
+    body: {
+      "name": name,
+    },
+    files: [
+      {"name": "img", "img": img}
+    ],
+    type: RequestType.post,
+  );
+
+  if (res != 200) {
+    switch (res) {
+      case 401:
+        error401(context);
+        break;
+      case 404:
+        error404(context);
+        break;
+      default:
+    }
+  }
+}
+
+Future editEdt(String id, String name, File img,
+    {context: BuildContext}) async {
+  var res = await formDataRequest(
+    '/edt/$id',
+    body: {
+      "name": name,
+    },
+    files: [
+      {"name": "img", "img": img}
+    ],
+    type: RequestType.put,
+  );
+
+  if (res != 200) {
+    switch (res) {
+      case 401:
+        error401(context);
+        break;
+      case 404:
+        error404(context);
+        break;
+      default:
+    }
+  }
+}
+
+Future removeEdt(String id, {context: BuildContext}) async {
+  var res = await request(RequestType.delete, '/edt/$id');
+
+  if (res["status"] != 200) {
+    switch (res["status"]) {
+      case 401:
+        error401(context);
+        break;
+      case 404:
+        error404(context);
+        break;
+      default:
+    }
+  }
+}
 
 // SETTINGS
-// TODO
-Future getNotificationStatus({context: BuildContext}) async {}
+Future<int> setNotifications(bool value, {context: BuildContext}) async {
+  var res = await request(RequestType.put, '/user',
+      body: {'notifsActivated': jsonEncode(value)});
 
-// TODO
-Future setNotificationStatus({context: BuildContext}) async {}
+  if (res["status"] != 200) {
+    switch (res["status"]) {
+      case 401:
+        error401(context);
+        return 401;
+      case 404:
+        error404(context);
+        return 404;
+      default:
+        return 404;
+    }
+  }
 
-// TODO
-Future getSupport({context: BuildContext}) async {}
-
-// TODO
-Future getAppVersion({context: BuildContext}) async {}
+  return 200;
+}

@@ -29,8 +29,9 @@ import 'package:polypeip/pages/admin_pages/ListEventsPage.dart';
 import 'package:polypeip/pages/admin_pages/ListReseauxPage.dart';
 import 'package:polypeip/pages/admin_pages/MessageWritePage.dart';
 import 'package:polypeip/pages/admin_pages/MessageriePage.dart';
-import 'package:polypeip/pages/admin_pages/PlanEdtAddPage.dart';
-import 'package:polypeip/pages/admin_pages/PlanEdtEditPage.dart';
+import 'package:polypeip/pages/admin_pages/PlanEditPage.dart';
+import 'package:polypeip/pages/admin_pages/EdtAddPage.dart';
+import 'package:polypeip/pages/admin_pages/EdtEditPage.dart';
 import 'package:polypeip/pages/admin_pages/PlanEdtPage.dart';
 import 'package:polypeip/pages/admin_pages/PostMessageriePage.dart';
 import 'package:polypeip/pages/admin_pages/PostMessagerieReceviedPage.dart';
@@ -176,8 +177,7 @@ class MyApp extends StatelessWidget {
               break;
             case "/edit/addPlanEdt":
               return PageTransition(
-                  child: PlanEdtAddPage(),
-                  type: PageTransitionType.rightToLeft);
+                  child: EdtAddPage(), type: PageTransitionType.rightToLeft);
               break;
             case "/edit/addGoodies":
               return PageTransition(
@@ -213,10 +213,18 @@ class MyApp extends StatelessWidget {
                   ),
                   type: PageTransitionType.rightToLeft);
               break;
-            case '/edit/editPlanEdt':
+            case '/edit/editPlan':
               return PageTransition(
-                  child: PlanEdtEditPage(
+                child: PlanEditPage(),
+                type: PageTransitionType.rightToLeft,
+              );
+              break;
+            case '/edit/editEdt':
+              return PageTransition(
+                  child: EdtEditPage(
                     planEdtId: getParameters(settings.arguments, 'planEdtId'),
+                    initialName:
+                        getParameters(settings.arguments, 'initialName'),
                   ),
                   type: PageTransitionType.rightToLeft);
               break;

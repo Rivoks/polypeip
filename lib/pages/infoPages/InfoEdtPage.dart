@@ -4,6 +4,8 @@ import 'package:photo_view/photo_view.dart';
 import 'package:polypeip/custom_icons/font_awesome_icons.dart';
 import 'package:polypeip/custom_widgets/CustomBackAppBar.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
+import 'package:polypeip/models/Edt.dart';
+import 'package:polypeip/services/requests.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class InfoEdtPage extends StatefulWidget {
@@ -13,33 +15,21 @@ class InfoEdtPage extends StatefulWidget {
 
 RefreshController _refreshController = RefreshController(initialRefresh: false);
 
-List<Map<String, String>> images = [
-  {
-    "_id": "ez64rze6r",
-    "description": "Image de Jussieu",
-    "imgUrl":
-        "https://www.lemoniteur.fr/mediatheque/4/3/6/001156634_620x393_c.jpg",
-  },
-  {
-    "_id": "ez64rze6r",
-    "description": "Image de Jussieu",
-    "imgUrl":
-        "https://www.lamodeenimages.com/sites/default/files-lmi/images/push/gucci-defile-cruise-2019-arles-la-mode-en-images-intro.jpg",
-  },
-  {
-    "_id": "ez64rze6r",
-    "description": "Image de Jussieu",
-    "imgUrl":
-        "https://www.lemoniteur.fr/mediatheque/4/3/6/001156634_620x393_c.jpg",
-  },
-];
-
 class _InfoEdtPageState extends State<InfoEdtPage> {
+  List<Edt> edts = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    getEdts(context: context).then((value) => setState(() => edts = value));
+  }
+
   Widget buildImageMap(height, width) {
     return ListView.builder(
       shrinkWrap: true,
       physics: ClampingScrollPhysics(),
-      itemCount: images.length,
+      itemCount: edts == null ? 0 : edts.length,
       itemBuilder: (container, index) {
         return Container(
           padding: EdgeInsets.symmetric(horizontal: width * 0.08),
@@ -52,7 +42,7 @@ class _InfoEdtPageState extends State<InfoEdtPage> {
                   width: width,
                   child: CachedNetworkImage(
                     fit: BoxFit.cover,
-                    imageUrl: images[index]['imgUrl'],
+                    imageUrl: edts[index].img,
                     placeholder: (context, url) {
                       return Container(
                           alignment: Alignment.center,
@@ -71,23 +61,27 @@ class _InfoEdtPageState extends State<InfoEdtPage> {
                 ),
                 Padding(padding: EdgeInsets.only(top: height * 0.015)),
                 CustomText(
-                  text: images[index]['description'],
+                  text: edts[index].name,
                   fontColor: FontColor.darkGrey,
                   fontSize: FontSize.md,
                 ),
                 Padding(
-                    padding: EdgeInsets.symmetric(vertical: height * 0.03),
-                    child: Container(
-                        color: (index == images.length - 1)
-                            ? Colors.grey[0]
-                            : Colors.grey[200],
-                        width: width,
-                        height: 1)),
+                  padding: EdgeInsets.symmetric(vertical: height * 0.03),
+                  child: Container(
+                    color: (index == edts.length - 1)
+                        ? Colors.grey[0]
+                        : Colors.grey[200],
+                    width: width,
+                    height: 1,
+                  ),
+                ),
               ],
             ),
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (_) {
-                return DetailScreen();
+                return DetailScreen(
+                  img: edts[index].img,
+                );
               }));
             },
           ),
@@ -174,6 +168,10 @@ class _InfoEdtPageState extends State<InfoEdtPage> {
 }
 
 class DetailScreen extends StatelessWidget {
+  final String img;
+
+  DetailScreen({@required this.img});
+
   @override
   Widget build(BuildContext context) {
     double _screenHeight = MediaQuery.of(context).size.height;
@@ -192,7 +190,7 @@ class DetailScreen extends StatelessWidget {
             child: PhotoView(
               minScale: 0.55,
               maxScale: 1.2,
-              imageProvider: NetworkImage(images[0]['imgUrl']),
+              imageProvider: NetworkImage(img),
               loadingBuilder: (context, event) => Center(
                 child: Container(
                   width: 20.0,

@@ -1,13 +1,14 @@
-import 'package:carousel_slider/carousel_controller.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:polypeip/custom_icons/font_awesome_icons.dart';
 import 'package:polypeip/custom_widgets/CustomBackAppBar.dart';
 import 'package:polypeip/custom_widgets/CustomBottomBarAlt.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
-import 'package:polypeip/custom_widgets/CustomTopbarAlt.dart';
+import 'package:polypeip/models/Message.dart';
+import 'package:polypeip/pages/PostMessagePage.dart';
 import 'package:polypeip/pages/infoPages/InfoGoodiesPage.dart';
+import 'package:polypeip/services/requests.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class MessageriePage extends StatefulWidget {
@@ -18,176 +19,35 @@ class MessageriePage extends StatefulWidget {
 class _MessageriePageState extends State<MessageriePage> {
   double _screenHeight;
   double _screenWidth;
-  CarouselController buttonCarouselController = CarouselController();
-
-  Color adminColor = Color(0xFF7f8fa6);
-
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
+  Color adminColor = Color(0xFF7f8fa6);
 
-  List<Map<String, String>> listMessages = [
-    {
-      "_id": "618ze9f4zfze496",
-      "title": "Avis",
-      "date": "04/05/2020",
-      "author": "Robert",
-      "description":
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc nec neque sapien. Proin suscipit commodo tellus, efficitur finibus nulla sollicitudin sagittis. Duis neque turpis, euismod vel porta non, varius pretium diam. Etiam non posuere justo. Vestibulum nec enim non tortor finibus pulvinar a ac ex. Mauris tempor, risus non accumsan egestas, felis erat lacinia neque, sed ornare mi ligula a erat. Praesent et augue consequat felis feugiat tincidunt. Nam libero urna, faucibus nec justo quis, convallis condimentum orci. Morbi nulla justo, venenatis et augue vel, ornare dapibus sapien. Nulla sed sodales felis. Etiam dictum sapien id lacus sagittis consequat. "
-    },
-    {
-      "_id": "aze4a984da",
-      "title": "Avis",
-      "date": "15/05/2020",
-      "author": "Léa",
-      "description":
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc nec neque sapien. Proin suscipit commodo tellus, efficitur finibus nulla sollicitudin sagittis. Duis neque turpis, euismod vel porta non, varius pretium diam. Etiam non posuere justo. Vestibulum nec enim non tortor finibus pulvinar a ac ex. Mauris tempor, risus non accumsan egestas, felis erat lacinia neque, sed ornare mi ligula a erat. Praesent et augue consequat felis feugiat tincidunt. Nam libero urna, faucibus nec justo quis, convallis condimentum orci. Morbi nulla justo, venenatis et augue vel, ornare dapibus sapien. Nulla sed sodales felis. Etiam dictum sapien id lacus sagittis consequat. "
-    },
-  ];
+  List<Message> messages = [];
 
   String listChoice = "new";
 
   final double topBarHeightPercent = 0.06;
 
-  Widget buildTopContent() {
-    return Container(
-      width: _screenWidth,
-      color: adminColor,
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: _screenHeight * 0.02),
-        child: Column(
-          children: <Widget>[
-            Icon(
-              FontAwesome.edit,
-              size: _screenHeight * 0.07,
-              color: CustomText.textColor(FontColor.white),
-            ),
-            Padding(padding: EdgeInsets.only(top: _screenHeight * 0.01)),
-            CustomText(
-              text: "Messagerie",
-              fontColor: FontColor.white,
-              fontSize: FontSize.lg,
-              uppercase: true,
-              fontWeight: FontWeight.bold,
-            )
-          ],
-        ),
-      ),
+  void setPage() {
+    getMessages().then((value) => setState(() => messages = value));
+  }
+
+  void initState() {
+    super.initState();
+    setPage();
+  }
+
+  Widget buildSlider(height, width) {
+    return ListView.builder(
+      itemCount: messages.length,
+      itemBuilder: (context, index) {
+        return buildmessages(messages[index]);
+      },
     );
   }
 
-  CarouselSlider buildSlider(height, width) {
-    return CarouselSlider(
-      carouselController: buttonCarouselController,
-      options: CarouselOptions(
-        height: height,
-        viewportFraction: 1.0,
-        enableInfiniteScroll: false,
-        autoPlay: false,
-        scrollPhysics: ClampingScrollPhysics(),
-        onPageChanged: (page, changeReason) {
-          setState(() {
-            if (page == 0)
-              listChoice = "new";
-            else
-              listChoice = "old";
-          });
-        },
-      ),
-      items: [
-        ListView.builder(
-            itemCount: listMessages.length,
-            itemBuilder: (context, index) {
-              return buildlistMessages(
-                  listMessages[index]['id'],
-                  listMessages[index]['title'],
-                  listMessages[index]['date'],
-                  listMessages[index]['author']);
-            }),
-        ListView.builder(
-            itemCount: listMessages.length,
-            itemBuilder: (context, index) {
-              return buildlistMessages(
-                  listMessages[index]['id'],
-                  listMessages[index]['title'],
-                  listMessages[index]['date'],
-                  listMessages[index]['author']);
-            }),
-      ],
-    );
-  }
-
-  Widget constructTopBar() {
-    double topBarHeight = _screenHeight * topBarHeightPercent;
-
-    return CustomTopbarAlt(
-      context: context,
-      widthScreen: _screenWidth,
-      heightScreen: _screenHeight,
-      appBarHeight: topBarHeightPercent,
-      topBarChild: new Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: <Widget>[
-          new GestureDetector(
-            onTap: () {
-              if (listChoice != "new") {
-                buttonCarouselController.previousPage(
-                  duration: Duration(milliseconds: 300),
-                  curve: Curves.linear,
-                );
-                setState(() {
-                  listChoice = "new";
-                });
-              }
-            },
-            child: new Container(
-              alignment: Alignment.center,
-              color: Colors.white,
-              width: _screenWidth / 2,
-              padding: EdgeInsets.only(left: _screenWidth / 8),
-              height: topBarHeight,
-              child: CustomText(
-                text: "Messages reçus",
-                fontColor:
-                    (listChoice == 'old') ? FontColor.grey : FontColor.blue,
-                fontSize: FontSize.sm,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-          ),
-          new GestureDetector(
-            onTap: () {
-              if (listChoice != "old") {
-                buttonCarouselController.nextPage(
-                  duration: Duration(milliseconds: 300),
-                  curve: Curves.linear,
-                );
-                setState(() {
-                  listChoice = "old";
-                });
-              }
-            },
-            child: new Container(
-              color: Colors.white,
-              width: _screenWidth / 2,
-              height: topBarHeight,
-              padding: EdgeInsets.only(right: _screenWidth / 8),
-              alignment: Alignment.center,
-              child: CustomText(
-                text: "Messages envoyés",
-                fontColor:
-                    (listChoice == 'new') ? FontColor.grey : FontColor.blue,
-                fontSize: FontSize.sm,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget buildlistMessages(_id, title, date, author) {
+  Widget buildmessages(Message msg) {
     return GestureDetector(
       child: Container(
         decoration: BoxDecoration(
@@ -212,19 +72,19 @@ class _MessageriePageState extends State<MessageriePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 CustomText(
-                  text: title,
+                  text: msg.subject,
                   fontColor: FontColor.blue,
                   fontSize: FontSize.md,
                   fontWeight: FontWeight.bold,
                 ),
+                // CustomText(
+                //   text: msg.sender,
+                //   fontColor: FontColor.black,
+                //   fontSize: FontSize.sm,
+                //   fontWeight: FontWeight.bold,
+                // ),
                 CustomText(
-                  text: author,
-                  fontColor: FontColor.black,
-                  fontSize: FontSize.sm,
-                  fontWeight: FontWeight.bold,
-                ),
-                CustomText(
-                  text: date,
+                  text: msg.date.toIso8601String(),
                   fontColor: FontColor.darkGrey,
                   fontSize: FontSize.xs,
                   fontWeight: FontWeight.normal,
@@ -234,15 +94,15 @@ class _MessageriePageState extends State<MessageriePage> {
           ],
         ),
       ),
-      onTap: () {
-        if (listChoice == 'new') {
-          return Navigator.pushNamed(context, "/admin/messageRecevied",
-              arguments: {"messageId": _id});
-        } else {
-          return Navigator.pushNamed(context, "/admin/message",
-              arguments: {"messageId": _id});
-        }
-      },
+      onTap: () => Navigator.push(
+        context,
+        PageTransition(
+          child: PostMessagePage(
+            message: msg,
+          ),
+          type: PageTransitionType.downToUp,
+        ),
+      ),
     );
   }
 
@@ -268,19 +128,36 @@ class _MessageriePageState extends State<MessageriePage> {
         onLoading: () async {
           print("loading");
         },
-        child: ListView.builder(
-          shrinkWrap: true,
+        child: ListView(
           physics: ClampingScrollPhysics(),
-          itemCount: listMessages.length,
-          itemBuilder: (context, index) {
-            return Column(
-              children: <Widget>[
-                (index == 0) ? buildTopContent() : Container(),
-                (index == 0) ? constructTopBar() : Container(),
-                buildSlider(_screenHeight, _screenWidth)
-              ],
-            );
-          },
+          children: [
+            Container(
+              width: _screenWidth,
+              color: adminColor,
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: _screenHeight * 0.02),
+                child: Column(
+                  children: <Widget>[
+                    Icon(
+                      FontAwesome.edit,
+                      size: _screenHeight * 0.07,
+                      color: CustomText.textColor(FontColor.white),
+                    ),
+                    Padding(
+                        padding: EdgeInsets.only(top: _screenHeight * 0.01)),
+                    CustomText(
+                      text: "Messagerie",
+                      fontColor: FontColor.white,
+                      fontSize: FontSize.lg,
+                      uppercase: true,
+                      fontWeight: FontWeight.bold,
+                    )
+                  ],
+                ),
+              ),
+            ),
+            ...messages.map((e) => buildmessages(e)).toList(),
+          ],
         ),
       ),
       floatingActionButton: SpeedDial(
@@ -311,7 +188,7 @@ class _MessageriePageState extends State<MessageriePage> {
                 context,
                 "/admin/answerMessage",
                 arguments: {"messageId": "id"},
-              );
+              ).then((value) => setPage());
             },
           ),
         ],

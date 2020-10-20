@@ -56,7 +56,7 @@ class _EventsPageState extends State<EventsPage> {
       if (events == null) return;
       events.forEach((event) {
         setState(() {
-          if (!event.date.isBefore(DateTime.now()))
+          if (event.date.isBefore(DateTime.now()))
             oldEvents.add(event);
           else
             newEvents.add(event);
@@ -242,29 +242,6 @@ class _EventsPageState extends State<EventsPage> {
                 ),
               ],
             ),
-            Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  CustomText(
-                    text: event.nbTotalRate == 0
-                        ? "0"
-                        : (event.totalRate / event.nbTotalRate).toString() +
-                            '/5',
-                    fontColor: FontColor.blue,
-                    fontSize: FontSize.md,
-                    fontWeight: FontWeight.w700,
-                  ),
-                  Padding(
-                      padding: EdgeInsets.only(right: _screenWidth * 0.015)),
-                  Icon(
-                    FontAwesome.star,
-                    size: _screenHeight * 0.028,
-                    color: CustomText.textColor(FontColor.blue),
-                  )
-                ],
-              ),
-            )
           ],
         ),
       ),

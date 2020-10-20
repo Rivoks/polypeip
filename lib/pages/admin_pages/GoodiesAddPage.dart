@@ -19,6 +19,7 @@ class _GoodiesAddPageState extends State<GoodiesAddPage> {
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
+  ImagePicker picker = ImagePicker();
 
   TextEditingController nameTFC = TextEditingController();
   TextEditingController descriptionTFC = TextEditingController();
@@ -32,18 +33,18 @@ class _GoodiesAddPageState extends State<GoodiesAddPage> {
   Color adminColor = Color(0xFF7f8fa6);
 
   Future imageCamera() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+    var image = await picker.getImage(source: ImageSource.camera);
 
     setState(() {
-      _image = image;
+      _image = File(image.path);
     });
   }
 
   Future imageGallery() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    var image = await picker.getImage(source: ImageSource.gallery);
 
     setState(() {
-      _image = image;
+      _image = File(image.path);
     });
   }
 

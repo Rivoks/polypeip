@@ -22,13 +22,16 @@ class _ListAnnuairePageState extends State<ListAnnuairePage> {
 
   Color adminColor = Color(0xFF7f8fa6);
 
-  @override
-  void initState() {
-    super.initState();
-
+  void setPage() {
     getContacts(context: context).then((value) {
       setState(() => contacts = value);
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setPage();
   }
 
   Widget buildEditForm(height, width, index) {
@@ -96,7 +99,7 @@ class _ListAnnuairePageState extends State<ListAnnuairePage> {
                         ),
                         type: PageTransitionType.downToUp,
                       ),
-                    ),
+                    ).then((value) => setPage()),
                   ),
                   Padding(padding: EdgeInsets.only(right: width * 0.05)),
                   GestureDetector(
@@ -170,10 +173,10 @@ class _ListAnnuairePageState extends State<ListAnnuairePage> {
                 children: <Widget>[
                   GestureDetector(
                     child: Icon(Icons.edit, color: Colors.grey[800]),
-                    onTap: () => {
-                      Navigator.pushNamed(context, "/edit/editAnnuaire",
-                          arguments: {"staffId": contacts[index].id})
-                    },
+                    onTap: () => Navigator.pushNamed(
+                            context, "/edit/editAnnuaire",
+                            arguments: {"staffId": contacts[index].id})
+                        .then((value) => setPage()),
                   ),
                   Padding(padding: EdgeInsets.only(right: width * 0.05)),
                   GestureDetector(
@@ -202,7 +205,8 @@ class _ListAnnuairePageState extends State<ListAnnuairePage> {
         fontWeight: FontWeight.bold,
         backgroundColor: null,
         borderColor: CustomText.textColor(FontColor.blue),
-        onPressed: () => {Navigator.pushNamed(context, "/edit/addAnnuaire")},
+        onPressed: () => Navigator.pushNamed(context, "/edit/addAnnuaire")
+            .then((value) => setPage()),
       ),
     );
   }

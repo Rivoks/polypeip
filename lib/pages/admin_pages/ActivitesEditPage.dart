@@ -23,7 +23,7 @@ class _ActivitesEditPageState extends State<ActivitesEditPage> {
   File _image;
   TextEditingController nameTFC = TextEditingController();
   TextEditingController contentTFC = TextEditingController();
-
+  ImagePicker picker = ImagePicker();
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
@@ -34,7 +34,6 @@ class _ActivitesEditPageState extends State<ActivitesEditPage> {
   double spaceInput = 0.1;
 
   Color blue = CustomText.textColor(FontColor.blue);
-
   Color adminColor = Color(0xFF7f8fa6);
 
   @override
@@ -46,18 +45,18 @@ class _ActivitesEditPageState extends State<ActivitesEditPage> {
   }
 
   Future imageCamera() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+    var image = await picker.getImage(source: ImageSource.camera);
 
     setState(() {
-      _image = image;
+      _image = File(image.path);
     });
   }
 
   Future imageGallery() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    var image = await picker.getImage(source: ImageSource.gallery);
 
     setState(() {
-      _image = image;
+      _image = File(image.path);
     });
   }
 

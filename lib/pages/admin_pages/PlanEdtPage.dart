@@ -4,6 +4,8 @@ import 'package:polypeip/custom_icons/font_awesome_icons.dart';
 import 'package:polypeip/custom_widgets/CustomBackAppBar.dart';
 import 'package:polypeip/custom_widgets/CustomRoundedButton.dart';
 import 'package:polypeip/custom_widgets/CustomText.dart';
+import 'package:polypeip/models/Edt.dart';
+import 'package:polypeip/services/requests.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class PlanEdtPage extends StatefulWidget {
@@ -14,34 +16,102 @@ class PlanEdtPage extends StatefulWidget {
 class _PlanEdtPageState extends State<PlanEdtPage> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
+  String plan;
 
-  List<Map<String, String>> planJussieu = [
-    {
-      "_id": "6az4e6aze4a",
-      "caption": "Plan de la fac",
-      "imgURL":
-          "https://www.cfa-sciences.fr/sites/default/files/thumbnails/image/Plan%20CFA%20des%20Sciences_0.png",
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+    setPage();
+  }
 
-  List<Map<String, String>> edtImg = [
-    {
-      "_id": "6az4e6aze4a",
-      "caption": "EDT Peip1A",
-      "imgURL":
-          "https://i.pinimg.com/originals/2f/ba/fe/2fbafe988de1dd4673c95670b8b58b52.jpg",
-    },
-    {
-      "_id": "6az4e6aze4a",
-      "caption": "EDT Peip1B",
-      "imgURL":
-          "https://www.a-qui-s.fr/le-blog/wp-content/uploads/2017/09/emploi-du-temps.png",
-    },
-  ];
-
+  List<Edt> edts;
   Color adminColor = Color(0xFF7f8fa6);
 
-  Widget buildEditForm(height, width, table, index) {
+  void setPage() {
+    getPlan(context: context).then((value) => setState(() => plan = value));
+    getEdts(context: context).then((value) => setState(() => edts = value));
+  }
+
+  Widget buildPlan(height, width) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: width * 0.05),
+      child: Container(
+        height: height * 0.1,
+        width: width,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: Colors.grey[200],
+          border: Border.all(color: Colors.grey[400], width: 0.3),
+          borderRadius: BorderRadius.circular(13),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey[400],
+              blurRadius: 5, // has the effect of softening the shadow
+              spreadRadius: -5, // has the effect of extending the shadow
+              offset: Offset(
+                0, // horizontal, move right 10
+                8, // vertical, move down 10
+              ),
+            ),
+          ],
+        ),
+        child: Row(
+          children: <Widget>[
+            ClipRRect(
+              borderRadius: BorderRadius.horizontal(left: Radius.circular(13)),
+              child: CachedNetworkImage(
+                width: width * 0.22,
+                height: height * 0.1,
+                fit: BoxFit.cover,
+                imageUrl: plan,
+                placeholder: (context, url) {
+                  return Container(
+                    width: width * 0.22,
+                    alignment: Alignment.center,
+                    child: Container(
+                      child: CircularProgressIndicator(
+                        backgroundColor: Colors.white,
+                      ),
+                    ),
+                    color: Colors.grey[400],
+                  );
+                },
+              ),
+            ),
+            Padding(padding: EdgeInsets.symmetric(horizontal: width * 0.015)),
+            Container(
+              width: width * 0.45,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  CustomText(
+                    text: 'Plan de la fac',
+                    fontColor: FontColor.black,
+                    fontSize: FontSize.md,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Row(
+                children: <Widget>[
+                  GestureDetector(
+                    child: Icon(Icons.edit, color: Colors.grey[800]),
+                    onTap: () => Navigator.pushNamed(context, "/edit/editPlan",
+                        arguments: {"isPlan": true}).then((value) => setPage()),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildEdtForm(height, width, Edt edt) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: width * 0.05),
       child: Container(
@@ -71,7 +141,7 @@ class _PlanEdtPageState extends State<PlanEdtPage> {
                 width: width * 0.22,
                 height: height * 0.1,
                 fit: BoxFit.cover,
-                imageUrl: table[index]['imgURL'],
+                imageUrl: edt.img,
                 placeholder: (context, url) {
                   return Container(
                       width: width * 0.22,
@@ -93,7 +163,7 @@ class _PlanEdtPageState extends State<PlanEdtPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   CustomText(
-                    text: table[index]['caption'],
+                    text: edt.name,
                     fontColor: FontColor.black,
                     fontSize: FontSize.md,
                     fontWeight: FontWeight.bold,
@@ -106,15 +176,18 @@ class _PlanEdtPageState extends State<PlanEdtPage> {
                 children: <Widget>[
                   GestureDetector(
                     child: Icon(Icons.edit, color: Colors.grey[800]),
-                    onTap: () => {
-                      Navigator.pushNamed(context, "/edit/editPlanEdt",
-                          arguments: {"planEdtId": table[index]['_id']})
-                    },
+                    onTap: () => Navigator.pushNamed(context, "/edit/editEdt",
+                        arguments: {
+                          "planEdtId": edt.id,
+                          "initialName": edt.name,
+                        }).then(
+                      (value) => setPage(),
+                    ),
                   ),
                   Padding(padding: EdgeInsets.only(right: width * 0.012)),
                   GestureDetector(
                     child: Icon(Icons.delete, color: Colors.grey[800]),
-                    onTap: () => print("delete"),
+                    onTap: () => removeEdt(edt.id, context: context),
                   )
                 ],
               ),
@@ -138,7 +211,8 @@ class _PlanEdtPageState extends State<PlanEdtPage> {
         fontWeight: FontWeight.bold,
         backgroundColor: null,
         borderColor: CustomText.textColor(FontColor.blue),
-        onPressed: () => {Navigator.pushNamed(context, "/edit/addPlanEdt")},
+        onPressed: () => Navigator.pushNamed(context, "/edit/addPlanEdt")
+            .then((value) => setPage()),
       ),
     );
   }
@@ -193,7 +267,7 @@ class _PlanEdtPageState extends State<PlanEdtPage> {
           child: ListView.builder(
             shrinkWrap: true,
             physics: ClampingScrollPhysics(),
-            itemCount: edtImg.length,
+            itemCount: edts == null ? 0 : edts.length,
             itemBuilder: (context, index) {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -213,8 +287,7 @@ class _PlanEdtPageState extends State<PlanEdtPage> {
                   (index == 0)
                       ? Column(
                           children: <Widget>[
-                            buildEditForm(
-                                _screenHeight, _screenWidth, planJussieu, 0),
+                            buildPlan(_screenHeight, _screenWidth),
                             Container(
                               margin:
                                   EdgeInsets.only(top: _screenHeight * 0.03),
@@ -226,8 +299,8 @@ class _PlanEdtPageState extends State<PlanEdtPage> {
                         )
                       : Container(),
                   Padding(padding: EdgeInsets.only(top: _screenHeight * 0.03)),
-                  buildEditForm(_screenHeight, _screenWidth, edtImg, index),
-                  (index == edtImg.length - 1)
+                  buildEdtForm(_screenHeight, _screenWidth, edts[index]),
+                  (index == (edts == null ? 0 : edts.length - 1))
                       ? Padding(
                           padding: EdgeInsets.only(top: _screenHeight * 0.05))
                       : Container(),

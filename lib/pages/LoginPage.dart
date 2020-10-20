@@ -56,7 +56,9 @@ class _LoginPageState extends State<LoginPage> {
       }
       prefs = await SharedPreferences.getInstance();
       prefs.setString('token', res['data']['token']);
-
+      prefs.setString('cursus', res['data']['cursus']);
+      prefs.setBool('isAdmin', res['data']['isAdmin']);
+      prefs.setBool('notifsActivated', res['data']['notifsActivated']);
       Navigator.pushReplacementNamed(context, "/home");
 
       setState(() => error = false);
